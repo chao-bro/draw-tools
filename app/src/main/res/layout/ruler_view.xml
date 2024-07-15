@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <com.example.tools.ruler.TransferLayout
+        android:id="@+id/transfer"
+        android:layout_width="560dp"
+        android:layout_height="70dp">
+
+        <View
+            android:id="@+id/draw_area"
+            android:layout_width="match_parent"
+            android:layout_height="20dp" />
+
+        <com.example.tools.ruler.RulerView
+            android:layout_marginTop="20dp"
+            android:id="@+id/ruler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <TextView
+            android:id="@+id/result"
+            android:textColor="@color/black"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:textSize="12sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <View
+            android:id="@+id/add_length"
+            android:layout_marginTop="20dp"
+            android:layout_width="30dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true" />
+
+        <View
+            android:id="@+id/close_view"
+            android:layout_alignParentBottom="true"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="25dp"
+            android:background="@drawable/close_btn" />
+
+        <View
+            android:id="@+id/rotate_view"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="4dp"
+            android:layout_marginBottom="4dp"
+            android:background="@drawable/rotate_btn" />
+
+    </com.example.tools.ruler.TransferLayout>
+
+</merge>
