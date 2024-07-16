@@ -91,6 +91,24 @@
                 android:insetBottom="0dp"/>
         </LinearLayout>
 
+        <!-- 添加撤销、重做和清空按钮 -->
+        <Button
+            android:id="@+id/bt_undo"
+            android:layout_width="64dp"
+            android:layout_height="wrap_content"
+            android:text="Undo" />
+
+        <Button
+            android:id="@+id/bt_redo"
+            android:layout_width="64dp"
+            android:layout_height="wrap_content"
+            android:text="Redo" />
+
+        <Button
+            android:id="@+id/bt_clear"
+            android:layout_width="64dp"
+            android:layout_height="wrap_content"
+            android:text="Clear" />
     </LinearLayout>
 
 </FrameLayout>
