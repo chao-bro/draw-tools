@@ -134,7 +134,6 @@ public class RulerLayout extends RelativeLayout {
             k2 = -1 / k1;
             double b1 = cenY - k1 * cenX;
             switch (motionEvent.getAction()) {
-                //TODO 触摸事件
                 case MotionEvent.ACTION_DOWN:
                     if (Double.isInfinite(k1)) {
                         //直尺垂直
@@ -164,19 +163,19 @@ public class RulerLayout extends RelativeLayout {
                     Log.d(TAG, "setViewTouchListeners: sx,sy" + sx + "," + sy);
                     break;
                 case MotionEvent.ACTION_MOVE:
+                    path.reset();
+                    path.moveTo(sx,sy);
                     if (Double.isInfinite(k1)) {
                         path.lineTo(cenX, motionEvent.getRawY());
                         drawLen = (motionEvent.getRawY() - sy) / 40;
                         text = String.format("%.2f", drawLen);
                         result.setText(text);
-                        invalidate();
                         break;
                     } else if (Double.isInfinite(k2)) {
                         path.lineTo(motionEvent.getRawX(), cenY);
                         drawLen = (motionEvent.getRawX() - sx) / 40;
                         text = String.format("%.2f", drawLen);
                         result.setText(text);
-                        invalidate();
                         break;
                     }
                     x = motionEvent.getRawX();
@@ -194,7 +193,8 @@ public class RulerLayout extends RelativeLayout {
                     result.setText(text);
                     break;
                 case MotionEvent.ACTION_UP:
-                    Log.d(TAG, "=============  next down event followed ========");
+                    onDeleteListener.onDelete(path);
+                    path.reset();
                     break;
             }
             return true;
@@ -210,7 +210,6 @@ public class RulerLayout extends RelativeLayout {
          * 旋转
          * */
         rotateV.setOnTouchListener((view, motionEvent) -> {
-            //TODO 偏移量获取
             float offsetX = rotateV.getLeft() - transfer.getScrollX();
             float offsetY = rotateV.getTop() - transfer.getScrollY();
             motionEvent.offsetLocation(offsetX, offsetY);
@@ -280,18 +279,20 @@ public class RulerLayout extends RelativeLayout {
                 startY = y;
                 invalidate();
                 break;
+            case MotionEvent.ACTION_UP:
+                onDeleteListener.onDelete(path);
+                path.reset();
+                break;
             default:
                 break;
         }
         return true;
     }
-
     public float dp2px(float dpValue) {
         DisplayMetrics metrics = mContext.getResources().getDisplayMetrics();
         float scale = metrics.density;
         return (dpValue * scale + 0.5f); // 加上0.5f是为了四舍五入
     }
-
 
     public void setOnDeleteListener(OnDeleteListener onDeleteListener) {
         this.onDeleteListener = onDeleteListener;
