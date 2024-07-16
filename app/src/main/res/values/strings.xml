@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Tools</string>
+    <string name="compass">compass</string>
+    <string name="protractor">protractor</string>
+    <string name="triangle">triangle</string>
+    <string name="ruler">ruler</string>
+    <string name="add_tools">+</string>
 </resources>

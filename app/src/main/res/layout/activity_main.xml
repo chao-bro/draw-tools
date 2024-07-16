@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
@@ -19,75 +18,79 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-
-    <Button
-        android:id="@+id/add_tools"
-        android:layout_gravity="bottom|end"
-        android:text="+"
-        android:textSize="28sp"
-        android:layout_width="48dp"
-        android:layout_marginBottom="24dp"
-        android:layout_marginEnd="24dp"
-        android:insetTop="0dp"
-        android:insetBottom="0dp"
-        android:layout_height="wrap_content"/>
-
     <LinearLayout
-        android:id="@+id/tool_list"
-        android:visibility="gone"
+        android:id="@+id/option"
         android:orientation="horizontal"
-        android:layout_width="wrap_content"
-        android:layout_gravity="end|bottom"
-        android:layout_marginBottom="24dp"
-        android:layout_marginEnd="76dp"
+        android:layout_gravity="bottom|end"
+        android:layout_marginBottom="12dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <Button
-            android:id="@+id/bt_yuan_gui"
-            android:layout_width="64dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_marginEnd="8dp"
-            android:insetTop="0dp"
-            android:insetBottom="0dp"
-            android:text="ruler"
-            android:textSize="12sp" />
-
-        <Button
-            android:id="@+id/bt_ruler"
-            android:layout_gravity="bottom|end"
-            android:text="sanjiao"
-            android:textSize="12sp"
-            android:layout_marginEnd="8dp"
-            android:layout_width="64dp"
+            android:id="@+id/add_tools"
+            android:layout_marginStart="12dp"
+            android:text="@string/add_tools"
+            android:textSize="28sp"
+            android:layout_width="48dp"
             android:insetTop="0dp"
             android:insetBottom="0dp"
             android:layout_height="wrap_content"/>
 
+        <LinearLayout
+            android:id="@+id/tool_list"
+            android:visibility="visible"
+            android:orientation="horizontal"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:layout_height="match_parent">
 
-        <Button
-            android:id="@+id/bt_san_jiao"
-            android:layout_gravity="bottom|end"
-            android:text="liangjiaoqi"
-            android:textSize="10sp"
-            android:layout_width="72dp"
-            android:layout_marginEnd="8dp"
-            android:insetTop="0dp"
-            android:insetBottom="0dp"
-            android:layout_height="wrap_content"/>
+            <Button
+                android:id="@+id/bt_ruler"
+                android:layout_width="76dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="bottom|end"
+                android:layout_marginEnd="8dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:text="@string/ruler"
+                android:textSize="12sp" />
 
-        <Button
-            android:id="@+id/bt_liang_jiao"
-            android:layout_gravity="bottom|end"
-            android:text="yuangui"
-            android:textSize="11sp"
-            android:layout_width="64dp"
-            android:layout_marginEnd="8dp"
-            android:insetTop="0dp"
-            android:insetBottom="0dp"
-            android:layout_height="wrap_content"/>
+            <Button
+                android:id="@+id/bt_triangle"
+                android:layout_gravity="bottom|end"
+                android:text="@string/triangle"
+                android:textSize="12sp"
+                android:layout_marginEnd="8dp"
+                android:layout_width="64dp"
+                android:layout_height="match_parent"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"/>
+
+
+            <Button
+                android:id="@+id/bt_protractor"
+                android:layout_gravity="bottom|end"
+                android:text="@string/protractor"
+                android:textSize="@dimen/_10sp"
+                android:layout_width="66dp"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="8dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"/>
+
+            <Button
+                android:id="@+id/bt_compass"
+                android:layout_gravity="bottom|end"
+                android:text="@string/compass"
+                android:textSize="@dimen/_10sp"
+                android:layout_width="64dp"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="8dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"/>
+        </LinearLayout>
 
     </LinearLayout>
-
 
 </FrameLayout>

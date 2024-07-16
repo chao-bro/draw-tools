@@ -8,7 +8,6 @@ import android.widget.RelativeLayout;
 
 public class TransferLayout extends RelativeLayout {
 
-    private Context mContext;
     //弧度
     public float layoutDegree = 0f;
     private float oriX = 0f;
@@ -17,15 +16,13 @@ public class TransferLayout extends RelativeLayout {
 
     public TransferLayout(Context context) {
         super(context);
-        this.mContext = context;
     }
 
     public TransferLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
-        this.mContext = context;
     }
 
-    public boolean rotateLayout(MotionEvent event) {
+    public void rotateLayout(MotionEvent event) {
         //处理旋转事件
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
@@ -44,13 +41,9 @@ public class TransferLayout extends RelativeLayout {
                 layoutDegree += angle;
                 setRotation(layoutDegree);
                 break;
-            case MotionEvent.ACTION_UP:
-                break;
             default:
                 break;
         }
-        return true;
-
     }
 
     // 计算两向量之间的旋转角度
@@ -77,10 +70,8 @@ public class TransferLayout extends RelativeLayout {
         } else if (cosDegree < -1) {
             cosDegree = -1.0f;
         }
-
         // 计算弧度
         float radian = (float) Math.acos(cosDegree);
-
         // 计算旋转角度，顺时针为正，逆时针为负
         return isClockwise ? (float) Math.toDegrees(radian) : -(float) Math.toDegrees(radian);
     }

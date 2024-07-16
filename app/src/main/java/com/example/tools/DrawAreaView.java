@@ -1,5 +1,6 @@
 package com.example.tools;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -8,12 +9,8 @@ import android.graphics.Path;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.FrameLayout;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-import com.example.tools.ruler.RulerLayout;
 
 public class DrawAreaView extends View {
 
@@ -35,19 +32,19 @@ public class DrawAreaView extends View {
         paint.setColor(Color.RED);
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(3);
-        paint.setAlpha(127);
         path = new Path();
     }
 
-    private int startX,startY;
+    int startX, startY;
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
-                startX = (int) event.getRawX();
-                startY = (int) event.getRawY();
-                path.moveTo(startX,startY);
+                 startX = (int) event.getRawX();
+                 startY= (int) event.getRawY();
+                path.moveTo(startX, startY);
                 break;
             case MotionEvent.ACTION_MOVE:
                 path.lineTo(event.getRawX(),event.getRawY());

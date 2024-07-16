@@ -12,21 +12,13 @@ import androidx.annotation.Nullable;
 
 public class RulerView extends View {
 
-    private int KE_DU_WIDTH = 8;
+    private final int KE_DU_WIDTH = 8;
 
     private int numKD;
 
-    private int textSize = 16;
-
-    //值的文本大小
-    private int valuesTextSize = 12;
-
-    //值的文本颜色
-    private int valuesTextColor = Color.BLACK;
-    private Paint paint = new Paint();
-    private Paint bgPaint = new Paint();
+    private final Paint paint = new Paint();
+    private final Paint bgPaint = new Paint();
     private float textHeight = 0f;
-    private float offset = 0f; //偏移
     private float minLength = 0f;
 
 
@@ -40,8 +32,8 @@ public class RulerView extends View {
     }
 
     private void initData() {
-        paint.setColor(valuesTextColor);
-        paint.setTextSize(valuesTextSize);
+        paint.setColor(Color.BLACK);
+        paint.setTextSize(12);
         paint.setAntiAlias(true);
         paint.setStyle(Paint.Style.STROKE);
 

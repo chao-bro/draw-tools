@@ -2,10 +2,7 @@ package com.example.tools.ruler;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Path;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -13,96 +10,72 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
+import com.example.tools.adapters.AbstractStrokeViewGroup;
 import com.example.tools.R;
-import com.example.tools.listener.OnDeleteListener;
 
-public class RulerLayout extends RelativeLayout {
+import java.util.Locale;
+
+public class RulerLayout extends AbstractStrokeViewGroup {
 
     private static final String TAG = "RULER_LAYOUT";
-    private RulerView rulerView;
-    private Context mContext;
-    private View deleteV, addLenV, rotateV, drawAreaView;
-    private TransferLayout transfer;
-    private int lastX, lastY;
-    private TextView result;
-
-    private Path path;
-    private Paint linePaint;
-
-    private OnDeleteListener onDeleteListener;
 
     public RulerLayout(Context context) {
         super(context);
-        this.mContext = context;
-        init();
     }
 
-    public RulerLayout(Context context, AttributeSet attrs) {
+    public RulerLayout(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        this.mContext = context;
-        init();
     }
 
     private float defaultX, defaultY;
-
-    @SuppressLint("ClickableViewAccessibility")
-    private void init() {
-
-        path = new Path();
-        linePaint = new Paint();
-        linePaint.setColor(Color.RED);
-        //只绘制成线条。不会填充
-        linePaint.setStyle(Paint.Style.STROKE);
-        linePaint.setStrokeWidth(3);
-        linePaint.setAntiAlias(true);
-        linePaint.setAlpha(127);
-
+    protected void init() {
+        paint.setAlpha(127);
         //设置背景色，防止上边距被裁掉
         setBackgroundColor(Color.TRANSPARENT);
-
-        LayoutInflater.from(mContext).inflate(R.layout.ruler_view, this);
-
-        rulerView = findViewById(R.id.ruler_view);
-        addLenV = findViewById(R.id.add_length);
-        deleteV = findViewById(R.id.close_view);
-        rotateV = findViewById(R.id.rotate_view);
-        transfer = findViewById(R.id.transfer);
-        result = findViewById(R.id.result);
-        drawAreaView = findViewById(R.id.draw_area);
-
+        inflateAndFindViews();
         //设置直尺容器在屏幕中的位置
-        DisplayMetrics displayMetrics = mContext.getResources().getDisplayMetrics();
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
         //获取屏幕的像素高度和宽度
         int heightPixels = displayMetrics.heightPixels;
         int widthPixels = displayMetrics.widthPixels;
-
         defaultX = widthPixels / 2f - dp2px(560f) / 2;
         defaultY = heightPixels / 2f - dp2px(50f) / 2;
         transfer.setTranslationX(defaultX);
         transfer.setTranslationY(defaultY);
-
         setViewTouchListeners();
     }
 
-
-    float cenX = 0.0f;
-    float cenY = 0.0f;
-    //直尺斜率
-    double k1 = 0;
-    //映射直线斜率
-    double k2 = 0;
+    //旋转中心点
+    float cenX = 0.0f,cenY = 0.0f;
+    //直尺斜率k1 垂线斜率k2
+    double k1 = 0,k2 = 0;
+    //开始画线的坐标
     float sx, sy;
+    //画线长度
     double drawLen = 0;
+    //填充文本
     String text = "";
 
-    @SuppressLint("ClickableViewAccessibility")
     private void setViewTouchListeners() {
         //直尺移动
+        moveRulerTouchListener();
+        //直尺顶部画线
+        drawAboveRulerTouchListener();
+        //删除
+        deleteRulerTouchListener();
+        //旋转
+        rotateRulerTouchListener();
+        //拖动拉长直尺
+        addRulerLenTouchListener();
+    }
+
+    private int lastX, lastY;
+    @SuppressLint("ClickableViewAccessibility")
+    private void moveRulerTouchListener() {
         rulerView.setOnTouchListener((view, event) -> {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
@@ -124,15 +97,19 @@ public class RulerLayout extends RelativeLayout {
             }
             return true;
         });
+    }
 
-        //直尺顶部画线
+    @SuppressLint("ClickableViewAccessibility")
+    private void drawAboveRulerTouchListener() {
         drawAreaView.setOnTouchListener((view, motionEvent) -> {
             cenX = transfer.getTranslationX();
             cenY = transfer.getTranslationY() + dp2px(20);
-            float alpha = transfer.getRotation() % 360;
+            float x = motionEvent.getRawX();
+            float y = motionEvent.getRawY();
             k1 = Math.tan(Math.toRadians(transfer.getRotation()));
             k2 = -1 / k1;
             double b1 = cenY - k1 * cenX;
+            double b2,xj;
             switch (motionEvent.getAction()) {
                 case MotionEvent.ACTION_DOWN:
                     if (Double.isInfinite(k1)) {
@@ -148,12 +125,9 @@ public class RulerLayout extends RelativeLayout {
                         break;
                     }
                     //计算按下点所在的垂线的偏移 b
-                    float x = motionEvent.getRawX();
-                    float y = motionEvent.getRawY();
-                    double b2 = -k2 * x + y;
-
+                    b2 = -k2 * x + y;
                     //计算垂线与直尺的焦点的 x 坐标，即垂直映射点的 x 值
-                    double xj = (b1 - b2) / (k2 - k1);
+                    xj = (b1 - b2) / (k2 - k1);
                     Log.w(TAG, "setViewTouchListeners: xj = " + xj);
 
                     sx = (float) xj;
@@ -168,13 +142,13 @@ public class RulerLayout extends RelativeLayout {
                     if (Double.isInfinite(k1)) {
                         path.lineTo(cenX, motionEvent.getRawY());
                         drawLen = (motionEvent.getRawY() - sy) / 40;
-                        text = String.format("%.2f", drawLen);
+                        text = String.format(Locale.getDefault(),"%.2f", drawLen);
                         result.setText(text);
                         break;
                     } else if (Double.isInfinite(k2)) {
                         path.lineTo(motionEvent.getRawX(), cenY);
                         drawLen = (motionEvent.getRawX() - sx) / 40;
-                        text = String.format("%.2f", drawLen);
+                        text = String.format(Locale.getDefault(),"%.2f", drawLen);
                         result.setText(text);
                         break;
                     }
@@ -189,26 +163,27 @@ public class RulerLayout extends RelativeLayout {
                     path.lineTo(ex, ey);
                     invalidate();
                     drawLen = (Math.sqrt(Math.pow(ex - sx, 2) + Math.pow(ey - sy, 2))) / 40;
-                    text = String.format("%.2f", drawLen);
+                    text = String.format(Locale.getDefault(),"%.2f", drawLen);
                     result.setText(text);
                     break;
                 case MotionEvent.ACTION_UP:
-                    onDeleteListener.onDelete(path);
+                    onDeleteListener.copyPath(path);
                     path.reset();
                     break;
             }
             return true;
         });
+    }
 
-        //删除
+    private void deleteRulerTouchListener() {
         deleteV.setOnClickListener(view -> {
-            onDeleteListener.onDelete(path);
+            onDeleteListener.copyPath(path);
             ((FrameLayout) RulerLayout.this.getParent()).removeView(RulerLayout.this);
         });
+    }
 
-        /*
-         * 旋转
-         * */
+    @SuppressLint("ClickableViewAccessibility")
+    private void rotateRulerTouchListener() {
         rotateV.setOnTouchListener((view, motionEvent) -> {
             float offsetX = rotateV.getLeft() - transfer.getScrollX();
             float offsetY = rotateV.getTop() - transfer.getScrollY();
@@ -218,10 +193,10 @@ public class RulerLayout extends RelativeLayout {
             transfer.rotateLayout(motionEvent);
             return true;
         });
+    }
 
-        /*
-          拖动拉长直尺
-         */
+    @SuppressLint("ClickableViewAccessibility")
+    private void addRulerLenTouchListener() {
         addLenV.setOnTouchListener((view, motionEvent) -> {
             switch (motionEvent.getAction()) {
                 case MotionEvent.ACTION_DOWN:
@@ -253,48 +228,18 @@ public class RulerLayout extends RelativeLayout {
         });
     }
 
-
-    //实现画板效果
-    @Override
-    protected void onDraw(@NonNull Canvas canvas) {
-        super.onDraw(canvas);
-        canvas.drawPath(path, linePaint);
-    }
-
-    private float startX, startY;
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                startX = event.getX();
-                startY = event.getY();
-                path.moveTo(startX, startY);
-                break;
-            case MotionEvent.ACTION_MOVE:
-                float x = event.getX();
-                float y = event.getY();
-                path.lineTo(x, y);
-                startX = x;
-                startY = y;
-                invalidate();
-                break;
-            case MotionEvent.ACTION_UP:
-                onDeleteListener.onDelete(path);
-                path.reset();
-                break;
-            default:
-                break;
-        }
-        return true;
-    }
-    public float dp2px(float dpValue) {
-        DisplayMetrics metrics = mContext.getResources().getDisplayMetrics();
-        float scale = metrics.density;
-        return (dpValue * scale + 0.5f); // 加上0.5f是为了四舍五入
-    }
-
-    public void setOnDeleteListener(OnDeleteListener onDeleteListener) {
-        this.onDeleteListener = onDeleteListener;
+    private RulerView rulerView;
+    private View deleteV, addLenV, rotateV, drawAreaView;
+    private TransferLayout transfer;
+    private TextView result;
+    private void inflateAndFindViews() {
+        LayoutInflater.from(context).inflate(R.layout.ruler_view, this);
+        rulerView = findViewById(R.id.ruler_view);
+        addLenV = findViewById(R.id.add_length);
+        deleteV = findViewById(R.id.close_view);
+        rotateV = findViewById(R.id.rotate_view);
+        transfer = findViewById(R.id.transfer);
+        result = findViewById(R.id.result);
+        drawAreaView = findViewById(R.id.draw_area);
     }
 }
