@@ -149,7 +149,6 @@ public class TriangleRulerLayout extends AbstractStrokeViewGroup {
                 return true;
             }
         });
-
         //顶端画线
         //纵向画线
     }

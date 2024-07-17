@@ -79,10 +79,11 @@ public class TriangleRulerView extends View {
             if (i % 5 == 0) {
                 String text = i / 5 + "";
                 canvas.drawLine(x, 0f, x, lineLen * 2, drawPaint);
-                canvas.drawLine(0f, getWidth() - x, lineLen * 2, getWidth() - x, drawPaint);
+                canvas.drawLine(0f, getWidth() - x,
+                        lineLen * 2, getWidth() - x,
+                        drawPaint);
                 canvas.drawText(text,
-                        x - drawPaint.measureText(text) / 2,
-                        lineLen * 2 + fh / 2,
+                        x - drawPaint.measureText(text) / 2, lineLen * 2 + fh / 2,
                         drawPaint);
                 canvas.save();
                 canvas.rotate(-90, 0, 0);
@@ -95,7 +96,9 @@ public class TriangleRulerView extends View {
                 canvas.restore();
             } else {
                 canvas.drawLine(x, 0f, x, lineLen, drawPaint);
-                canvas.drawLine(0f, getWidth() - x, lineLen, getWidth() - x, drawPaint);
+                canvas.drawLine(0f, getWidth() - x,
+                        lineLen, getWidth() - x,
+                        drawPaint);
             }
         }
     }
