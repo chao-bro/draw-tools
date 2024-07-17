@@ -60,6 +60,7 @@ public abstract class AbstractStrokeViewGroup extends RelativeLayout {
     protected void onDraw(@NonNull Canvas canvas) {
         super.onDraw(canvas);
         canvas.drawPath(path,paint);
+        onDeleteListener.copyPath(path);
     }
 
     float startX, startY;

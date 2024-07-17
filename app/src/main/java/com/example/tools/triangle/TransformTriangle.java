@@ -1,29 +1,28 @@
-package com.example.tools.ruler;
+package com.example.tools.triangle;
 
 import android.content.Context;
 import android.graphics.Point;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.RelativeLayout;
 
-public class TransferLayout extends RelativeLayout {
+public class TransformTriangle extends RelativeLayout {
 
-    private static final String TAG = "TransferLayout";
+    private static final String TAG = "TransformTriangle";
 
-    public TransferLayout(Context context) {
+
+    public TransformTriangle(Context context) {
         super(context);
     }
 
-    public TransferLayout(Context context, AttributeSet attrs) {
+    public TransformTriangle(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    //弧度
+
     public float layoutDegree = 0f;
     private float oriX = 0f;
     private float oriY = 0f;
-
     public void rotateLayout(MotionEvent event) {
         //处理旋转事件
         switch (event.getActionMasked()) {
@@ -37,7 +36,7 @@ public class TransferLayout extends RelativeLayout {
                 float tempRawY = event.getY();
                 Point first = new Point((int) oriX, (int) oriY);
                 Point second = new Point((int) tempRawX, (int) tempRawY);
-                Point cen = new Point(getLeft(), getTop());
+                Point cen = new Point( getLeft(),getTop());
                 // 计算旋转角度
                 float angle = angle(cen, first, second);
                 layoutDegree += angle;
@@ -78,5 +77,4 @@ public class TransferLayout extends RelativeLayout {
         // 计算旋转角度，顺时针为正，逆时针为负
         return isClockwise ? (float) Math.toDegrees(radian) : -(float) Math.toDegrees(radian);
     }
-
 }

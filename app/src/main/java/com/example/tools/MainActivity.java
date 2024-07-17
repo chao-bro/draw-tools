@@ -8,6 +8,7 @@ import android.widget.LinearLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.tools.adapters.AbstractStrokeViewGroup;
 import com.example.tools.ruler.RulerLayout;
+import com.example.tools.triangle.TriangleRulerLayout;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -24,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         initViews();
         setEvents();
+        addNewTool(new TriangleRulerLayout(this));
     }
 
     private void setEvents() {
@@ -39,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
 
         btRuler.setOnClickListener(view -> addNewTool(new RulerLayout(MainActivity.this)));
 
-        btTriangle.setOnClickListener(view -> addNewTool(new RulerLayout(MainActivity.this)));
+        btTriangle.setOnClickListener(view -> addNewTool(new TriangleRulerLayout(MainActivity.this)));
 
         btProtractor.setOnClickListener(view -> addNewTool(new RulerLayout(MainActivity.this)));
 
@@ -65,12 +67,8 @@ public class MainActivity extends AppCompatActivity {
 
         drawAreaView = findViewById(R.id.draw_area);
 
-        toolV = findViewById(R.id.ruler);
-        toolV.setOnDeleteListener(path -> MainActivity.this.drawAreaView.drawOnMe(path));
-
+//        toolV = new TriangleRulerLayout(this)
         main = findViewById(R.id.main);
-        main.bringChildToFront(option);
-
         btRuler = findViewById(R.id.bt_ruler);
         btTriangle = findViewById(R.id.bt_triangle);
         btProtractor = findViewById(R.id.bt_protractor);

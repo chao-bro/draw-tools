@@ -12,11 +12,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <com.example.tools.ruler.RulerLayout
-        android:id="@+id/ruler"
-        android:background="@color/black"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+<!--    <com.example.tools.ruler.RulerLayout-->
+<!--        android:id="@+id/ruler"-->
+<!--        android:background="@color/black"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent" />-->
 
     <LinearLayout
         android:id="@+id/option"
