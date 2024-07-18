@@ -9,7 +9,6 @@ import android.graphics.RectF;
 import android.graphics.Region;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -22,6 +21,8 @@ import androidx.annotation.Nullable;
 import com.example.tools.R;
 import com.example.tools.adapters.AbstractStrokeViewGroup;
 
+import java.util.Locale;
+
 public class TriangleRulerLayout extends AbstractStrokeViewGroup {
     private final String TAG = "TriangleRulerLayout";
 
@@ -33,7 +34,6 @@ public class TriangleRulerLayout extends AbstractStrokeViewGroup {
         super(context, attrs);
     }
 
-    private float transX = 0f, transY = 0f;
 
     @Override
     protected void init() {
@@ -42,15 +42,14 @@ public class TriangleRulerLayout extends AbstractStrokeViewGroup {
         DisplayMetrics dm = context.getResources().getDisplayMetrics();
         int heightPixels = dm.heightPixels;
         int widthPixels = dm.widthPixels;
-        transX = (float) (widthPixels - dp2px(300)) / 2;
-        Log.d(TAG, "init: transX = " + transX);
-        Log.d(TAG, "init: widthPixels = " + widthPixels);
-        Log.d(TAG, "init: getWidth = " + getWidth());
-        transY = (float) (heightPixels - dp2px(300)) / 2;
+        float transX = (widthPixels - dp2px(300)) / 2;
+        float transY = (heightPixels - dp2px(300)) / 2;
         transformer.setTranslationX(transX);
         transformer.setTranslationY(transY);
         setTouchEvents();
     }
+
+    float dsx = 0f, dsy = 0f, dex = 0f, dey = 0f;
 
     @SuppressLint("ClickableViewAccessibility")
     private void setTouchEvents() {
@@ -78,8 +77,8 @@ public class TriangleRulerLayout extends AbstractStrokeViewGroup {
                         } else if (isPointInPath(triangle.outPath, point) && isPointInPath(triangle.inPath, point)) {
                             inside = false;
                         }
-                        Log.d(TAG, "onTouch: is in out ?" + isPointInPath(triangle.outPath, point));
-                        Log.d(TAG, "onTouch: is in in ? " + isPointInPath(triangle.inPath, point));
+//                        Log.d(TAG, "onTouch: is in out ?" + isPointInPath(triangle.outPath, point));
+//                        Log.d(TAG, "onTouch: is in in ? " + isPointInPath(triangle.inPath, point));
                         break;
                     case MotionEvent.ACTION_MOVE:
                         float rawX = motionEvent.getRawX();
@@ -133,12 +132,11 @@ public class TriangleRulerLayout extends AbstractStrokeViewGroup {
                     case MotionEvent.ACTION_MOVE:
                         float x = motionEvent.getRawX();
                         float y = motionEvent.getRawY();
-                        float dx = x - sx;
-                        float dy = y - sy;
-                        float min = Math.min(dx, dy);
+                        double radians = Math.toRadians(transformer.getRotation());
+                        double len = (x - sx) * Math.cos(radians) + (y - sy) * Math.sin(radians);
                         ViewGroup.LayoutParams params = transformer.getLayoutParams();
-                        params.height += (int) min;
-                        params.width += (int) min;
+                        params.height += (int) len;
+                        params.width += (int) len;
                         transformer.setLayoutParams(params);
                         sx = x;
                         sy = y;
@@ -149,8 +147,138 @@ public class TriangleRulerLayout extends AbstractStrokeViewGroup {
                 return true;
             }
         });
+
+
         //顶端画线
+        drawHor.setOnTouchListener((view, motionEvent) -> {
+            double k1,k2,b1,b2;
+            float xj, rawX, rawY, cenX, cenY, res = 0f;
+            String text = "";
+            cenX = transformer.getTranslationX() + dp2px(20);
+            cenY = transformer.getTranslationY() + dp2px(20);
+            rawX = motionEvent.getRawX();
+            rawY = motionEvent.getRawY();
+            k1 = (float) Math.tan(Math.toRadians(transformer.getRotation()));
+            k2 = -1 / k1;
+            switch (motionEvent.getActionMasked()) {
+                case MotionEvent.ACTION_DOWN:
+                    if (Double.isInfinite(k1)) {
+                        //垂直
+                        dsx = cenX;
+                        dsy = rawY;
+                        break;
+                    } else if (Double.isInfinite(k2)) {
+                        //水平
+                        dsx = rawX;
+                        dsy = cenY;
+                        break;
+                    }
+                    b1 = cenY - k1 * cenX;
+                    b2 = rawY - k2 * rawX;
+                    xj = (float) ((b2 - b1) / (k1 - k2));
+                    dsx = xj;
+                    dsy = (float) (xj * k1 + b1);
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    path.reset();
+                    path.moveTo(dsx, dsy);
+                    if (Double.isInfinite(k1) || Double.isInfinite(k2)) {
+                        if (Double.isInfinite(k1)) {
+                            //垂直
+                            path.lineTo(cenX, rawY);
+                            res = (rawY - dsy) / 40;
+                        } else if (Double.isInfinite(k2)) {
+                            //水平
+                            path.lineTo(rawX, cenY);
+                            res = (rawX - dsx) / 40;
+                        }
+                    } else {
+                        b1 = cenY - k1 * cenX;
+                        b2 = rawY - k2 * rawX;
+                        xj = (float) ((b2 - b1) / (k1 - k2));
+                        dex = xj;
+                        dey = (float) (k1 * xj + b1);
+                        path.lineTo(dex, dey);
+                        res = (float) Math.sqrt(Math.pow(dex - dsx, 2) + Math.pow(dey - dsy, 2)) / 40;
+                    }
+                    text = String.format(Locale.getDefault(), "%.2f", Math.abs(res));
+                    result.setText(text);
+                    invalidate();
+                    break;
+                case MotionEvent.ACTION_UP:
+                    onDeleteListener.copyPath(path);
+                    break;
+            }
+            return true;
+        });
+
         //纵向画线
+        drawVer.setOnTouchListener((view, motionEvent) -> {
+            double k1,k2,b1,b2;
+            float  xj, rawX, rawY, cenX, cenY, res = 0f;
+            String text = "";
+            cenX = transformer.getTranslationX() + dp2px(20);
+            cenY = transformer.getTranslationY() + dp2px(20);
+            rawX = motionEvent.getRawX();
+            rawY = motionEvent.getRawY();
+            k1 =  Math.tan(Math.toRadians(transformer.getRotation()));
+            k2 = -1 / k1;
+//            Log.d(TAG, "setTouchEvents: k1 ???" + Double.isInfinite(k1));
+//            Log.d(TAG, "setTouchEvents: k2 ???" + Double.isInfinite(k2));
+            switch (motionEvent.getActionMasked()) {
+                case MotionEvent.ACTION_DOWN:
+                    if (Double.isInfinite(k1)) {
+                        //水平
+                        dsx = rawX;
+                        dsy = cenY;
+                        break;
+                    } else if (Double.isInfinite(k2)) {
+                        //垂直
+                        dsx = cenX;
+                        dsy = rawY;
+                        break;
+                    }
+                    b2 = cenY - k2 * cenX;
+                    b1 = rawY - k1 * rawX;
+                    xj = (float) ((b2 - b1) / (k1 - k2));
+                    dsx = xj;
+                    dsy = (float) (xj * k1 + b1);
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    path.reset();
+                    path.moveTo(dsx, dsy);
+                    if (Double.isInfinite(k1) || Double.isInfinite(k2)) {
+                        if (Double.isInfinite(k1)) {
+                            //纵向画线区域水平
+                            path.lineTo(rawX, cenY);
+                            res = (rawX - dsx) / 40;
+
+                        } else if (Double.isInfinite(k2)) {
+                            //纵向画线区域垂直
+                            path.lineTo(cenX, rawY);
+                            res = (rawY - dsy) / 40;
+                        }
+                    } else {
+                        b2 = cenY - k2 * cenX;
+                        b1 = rawY - k1 * rawX;
+                        xj = (float) ((b2 - b1) / (k1 - k2));
+                        dex = xj;
+                        dey = (float) (k1 * xj + b1);
+                        path.lineTo(dex, dey);
+                        res = (float) Math.sqrt(Math.pow(dex - dsx, 2) + Math.pow(dey - dsy, 2)) / 40;
+                    }
+                    text = String.format(Locale.getDefault(), "%.2f", Math.abs(res));
+                    result.setText(text);
+                    invalidate();
+                    break;
+                case MotionEvent.ACTION_UP:
+                    onDeleteListener.copyPath(path);
+                    break;
+            }
+            return true;
+        });
+
+
     }
 
     private boolean isPointInPath(Path path, Point point) {

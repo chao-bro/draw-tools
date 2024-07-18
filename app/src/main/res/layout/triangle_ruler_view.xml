@@ -6,8 +6,8 @@
 
     <com.example.tools.triangle.TransformTriangle
         android:id="@+id/transformer"
-        android:layout_width="360dp"
-        android:layout_height="360dp">
+        android:layout_width="300dp"
+        android:layout_height="300dp">
 
         <View
             android:id="@+id/draw_area_h"

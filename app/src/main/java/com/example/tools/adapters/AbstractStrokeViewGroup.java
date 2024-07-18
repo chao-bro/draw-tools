@@ -23,6 +23,7 @@ public abstract class AbstractStrokeViewGroup extends RelativeLayout {
     protected int strokeWid = 3;
     protected OnDeleteListener onDeleteListener;
     protected abstract void init();
+    protected float startX, startY;
 
     public AbstractStrokeViewGroup(Context context) {
         super(context);
@@ -62,8 +63,6 @@ public abstract class AbstractStrokeViewGroup extends RelativeLayout {
         canvas.drawPath(path,paint);
         onDeleteListener.copyPath(path);
     }
-
-    float startX, startY;
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
