@@ -11,46 +11,27 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.example.tools.adapters.AbstractBasicView;
 import com.example.tools.adapters.AbstractStrokeViewGroup;
 import com.example.tools.application.MyApplication;
 
-public class RulerView extends View {
+public class RulerView extends AbstractBasicView {
 
-    private int interval;
-    private int numKD;
-    private final Paint paint = new Paint();
-    private final Paint bgPaint = new Paint();
-    private float textHeight = 0f;
-    private float minLength = 0f;
+
+    private Paint bgPaint;
 
     public RulerView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        DisplayMetrics dm = context.getResources().getDisplayMetrics();
-        interval = (int) (dm.density * 4 + 0.5);
-        initData();
     }
 
-    private void initData() {
-        paint.setColor(Color.BLACK);
-        paint.setTextSize(12);
-        paint.setAntiAlias(true);
-        paint.setStyle(Paint.Style.STROKE);
-
+    @Override
+    protected void init() {
+        bgPaint = new Paint();
         bgPaint.setColor(Color.WHITE);
         bgPaint.setStyle(Paint.Style.FILL);
         bgPaint.setStrokeWidth(3);
         bgPaint.setAntiAlias(true);
         bgPaint.setAlpha(100);
-        Paint.FontMetrics fm = paint.getFontMetrics();
-        //计算字体的高度
-        textHeight = (int) (fm.bottom - fm.top);
-    }
-
-    @Override
-    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        super.onLayout(changed, left, top, right, bottom);
-        numKD = getWidth() / interval - 2;
-        minLength = getHeight() / 8f;
     }
 
     @Override
@@ -59,6 +40,8 @@ public class RulerView extends View {
         //画直尺
         canvas.drawRoundRect(0f, 0f, getWidth(), getHeight(), 0.5f, 0.5f, bgPaint);
         canvas.drawRoundRect(0f, 0f, getWidth(), getHeight(), 0.5f, 0.5f, paint);
+        int numKD = getWidth() / interval - 2;
+        float minLength = getHeight() / 8f;
         //画刻度
         for (int i = 1; i <= numKD; i++) {
             int wid = i * interval;
@@ -71,7 +54,7 @@ public class RulerView extends View {
                 String text = (i - 1) / 5 + "";
                 canvas.drawText(text,
                         wid - paint.measureText(text) / 2,
-                        minLength * 2.5f + textHeight / 2,
+                        minLength * 2.5f + (float) textHeight / 2,
                         paint);
             } else {
                 //小刻度

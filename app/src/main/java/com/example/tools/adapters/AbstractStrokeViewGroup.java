@@ -23,6 +23,8 @@ public abstract class AbstractStrokeViewGroup extends RelativeLayout {
     protected Path path;
     protected int strokeWid = 3;
     protected OnDeleteListener onDeleteListener;
+    protected boolean isDrawing = false;
+    protected int screenHeight, screenWidth;
 
     protected abstract void init();
 
@@ -49,6 +51,8 @@ public abstract class AbstractStrokeViewGroup extends RelativeLayout {
         paint.setAntiAlias(true);
         path = new Path();
         DisplayMetrics dm = context.getResources().getDisplayMetrics();
+        screenHeight = dm.heightPixels;
+        screenWidth = dm.widthPixels;
         interval = (int) (dm.density * 4 + 0.5);
         init();
     }
@@ -73,6 +77,7 @@ public abstract class AbstractStrokeViewGroup extends RelativeLayout {
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
+                isDrawing = true;
                 startX = event.getX();
                 startY = event.getY();
                 path.moveTo(startX, startY);
@@ -86,6 +91,7 @@ public abstract class AbstractStrokeViewGroup extends RelativeLayout {
                 invalidate();
                 break;
             case MotionEvent.ACTION_UP:
+                isDrawing = false;
                 onDeleteListener.copyPath(path);
                 path.reset();
                 break;

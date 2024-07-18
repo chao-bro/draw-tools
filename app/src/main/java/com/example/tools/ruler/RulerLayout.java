@@ -98,7 +98,7 @@ public class RulerLayout extends AbstractStrokeViewGroup {
                     transfer.setTranslationX(defaultX);
                     transfer.setTranslationY(defaultY);
                     break;
-                default:
+                case MotionEvent.ACTION_UP:
                     Log.d(TAG, "touch to move ruler to (" +
                             transfer.getTranslationX() +
                             "," +
@@ -225,7 +225,7 @@ public class RulerLayout extends AbstractStrokeViewGroup {
                     //每次触发都更新至上一次触发点
                     lastX = rawX;
                     lastY = rawY;
-                default:
+                case MotionEvent.ACTION_UP:
                     Log.d(TAG, "touch to enlarge ruler, current length is "+ transfer.getWidth());
                     break;
             }

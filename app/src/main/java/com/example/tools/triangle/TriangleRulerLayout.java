@@ -146,6 +146,9 @@ public class TriangleRulerLayout extends AbstractStrokeViewGroup {
                         ViewGroup.LayoutParams params = transformer.getLayoutParams();
                         params.height += (int) len;
                         params.width += (int) len;
+                        if(params.height <= dp2px(160)){
+                            break;
+                        }
                         transformer.setLayoutParams(params);
                         sx = x;
                         sy = y;
