@@ -13,6 +13,7 @@ import android.widget.RelativeLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.example.tools.application.MyApplication;
 import com.example.tools.listener.OnDeleteListener;
 
 public abstract class AbstractStrokeViewGroup extends RelativeLayout {
@@ -22,8 +23,11 @@ public abstract class AbstractStrokeViewGroup extends RelativeLayout {
     protected Path path;
     protected int strokeWid = 3;
     protected OnDeleteListener onDeleteListener;
+
     protected abstract void init();
+
     protected float startX, startY;
+    protected int interval = 0;
 
     public AbstractStrokeViewGroup(Context context) {
         super(context);
@@ -37,17 +41,19 @@ public abstract class AbstractStrokeViewGroup extends RelativeLayout {
         unPublicInit();
     }
 
-    private void unPublicInit(){
+    private void unPublicInit() {
         paint = new Paint();
-        paint .setColor(Color.RED);
+        paint.setColor(Color.RED);
         paint.setStrokeWidth(strokeWid);
         paint.setStyle(Paint.Style.STROKE);
         paint.setAntiAlias(true);
         path = new Path();
+        DisplayMetrics dm = context.getResources().getDisplayMetrics();
+        interval = (int) (dm.density * 4 + 0.5);
         init();
     }
 
-    public void setOnDeleteListener(OnDeleteListener onDeleteListener){
+    public void setOnDeleteListener(OnDeleteListener onDeleteListener) {
         this.onDeleteListener = onDeleteListener;
     }
 
@@ -60,9 +66,9 @@ public abstract class AbstractStrokeViewGroup extends RelativeLayout {
     @Override
     protected void onDraw(@NonNull Canvas canvas) {
         super.onDraw(canvas);
-        canvas.drawPath(path,paint);
-        onDeleteListener.copyPath(path);
+        canvas.drawPath(path, paint);
     }
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction()) {

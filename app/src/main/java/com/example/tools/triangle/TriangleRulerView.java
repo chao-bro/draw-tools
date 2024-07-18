@@ -7,27 +7,34 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.example.tools.application.MyApplication;
+
 /**
  * 三角尺的样式绘制
  */
 public class TriangleRulerView extends View {
 
-    private final String TAG = "TriangleRulerView";
+    private int interval;
 
     public TriangleRulerView(Context context) {
         super(context);
         init();
+        DisplayMetrics dm = context.getResources().getDisplayMetrics();
+        interval = (int) (dm.density * 4 + 0.5);
     }
 
     public TriangleRulerView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         init();
+        DisplayMetrics dm = context.getResources().getDisplayMetrics();
+        interval = (int) (dm.density * 4 + 0.5);
     }
 
     protected Path outPath, inPath;
@@ -66,16 +73,13 @@ public class TriangleRulerView extends View {
         inPath.lineTo(inSideLen, sideLen - insideXie);
         inPath.close();
         canvas.drawPath(inPath, drawPaint);
-
         //绘制刻度线 两条
-        int widthKD = 8;
         float lineLen = inSideLen / 10;//取边宽的 1 / 10 为最短线的长度
-        int num = getWidth() / widthKD - 10;//左右留白各一个单位长度
-        Log.d(TAG, "onDraw: num = " + num);
+        int num = getWidth() / interval - 10;//左右留白各一个单位长度
         Paint.FontMetrics fm = drawPaint.getFontMetrics();
         float fh = fm.bottom - fm.top;
         for (int i = 0; i < num; i++) {
-            int x = (int) (40f + 8 * i);
+            int x = (5 + i) * interval;
             if (i % 5 == 0) {
                 String text = i / 5 + "";
                 canvas.drawLine(x, 0f, x, lineLen * 2, drawPaint);

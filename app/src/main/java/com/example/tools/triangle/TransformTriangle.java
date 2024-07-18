@@ -3,13 +3,13 @@ package com.example.tools.triangle;
 import android.content.Context;
 import android.graphics.Point;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.RelativeLayout;
 
 public class TransformTriangle extends RelativeLayout {
 
     private static final String TAG = "TransformTriangle";
-
 
     public TransformTriangle(Context context) {
         super(context);
@@ -40,10 +40,11 @@ public class TransformTriangle extends RelativeLayout {
                 // 计算旋转角度
                 float angle = angle(cen, first, second);
                 layoutDegree += angle;
-//                Log.d(TAG, "rotateLayout: angle = " + angle);
                 setRotation(layoutDegree);
                 break;
             default:
+                Log.d(TAG, "touch to rotate triangle , current rotation degree is " +
+                        getRotation() % 360);
                 break;
         }
     }

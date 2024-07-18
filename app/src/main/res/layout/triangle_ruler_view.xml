@@ -46,10 +46,10 @@
 
         <View
             android:id="@+id/close"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginTop="25dp"
-            android:layout_marginStart="25dp"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_marginTop="22dp"
+            android:layout_marginStart="22dp"
             android:background="@drawable/close_btn" />
 
         <View
@@ -57,8 +57,8 @@
             android:layout_width="15dp"
             android:layout_height="15dp"
             android:layout_alignParentEnd="true"
-            android:layout_marginTop="22dp"
-            android:layout_marginEnd="18dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="10dp"
             android:background="@drawable/rotate_btn" />
 
     </com.example.tools.triangle.TransformTriangle>

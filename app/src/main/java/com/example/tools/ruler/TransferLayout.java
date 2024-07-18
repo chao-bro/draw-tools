@@ -41,10 +41,11 @@ public class TransferLayout extends RelativeLayout {
                 // 计算旋转角度
                 float angle = angle(cen, first, second);
                 layoutDegree += angle;
-//                Log.d(TAG, "rotateLayout: angle = " + angle);
                 setRotation(layoutDegree);
                 break;
             default:
+                Log.d(TAG, "touch to rotate ruler, current rotation degree is " +
+                        getRotation() % 360);
                 break;
         }
     }

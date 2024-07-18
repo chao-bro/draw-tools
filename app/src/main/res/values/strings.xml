@@ -1,8 +1,8 @@
 <resources>
-    <string name="app_name">Tools</string>
-    <string name="compass">compass</string>
-    <string name="protractor">protractor</string>
-    <string name="triangle">triangle</string>
-    <string name="ruler">ruler</string>
+    <string name="app_name">白板工具</string>
+    <string name="compass">圆规</string>
+    <string name="protractor">量角器</string>
+    <string name="triangle">三角尺</string>
+    <string name="ruler">直尺</string>
     <string name="add_tools">+</string>
 </resources>
