@@ -31,7 +31,7 @@ public abstract class AbstractBasicView extends View {
         path = new Path();
         paint.setColor(Color.BLACK);
         paint.setStyle(Paint.Style.STROKE);
-        paint.setTextSize(12);
+        paint.setTextSize(14);
         paint.setAntiAlias(true);
         Paint.FontMetrics fm = paint.getFontMetrics();
         //计算字体的高度

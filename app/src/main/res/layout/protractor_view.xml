@@ -1,33 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge
+    android:id="@+id/main"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <com.example.tools.protractor.ProtractorTransformer
         android:id="@+id/transformer"
-        android:layout_width="500dp"
-        android:layout_height="270dp">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <com.example.tools.protractor.ProtractorView
             android:id="@+id/protractor"
-            android:layout_marginBottom="20dp"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
         <View
             android:id="@+id/close"
+            android:alpha="0.5"
             android:background="@drawable/close_btn"
             android:layout_centerHorizontal="true"
-            android:layout_alignParentBottom="true"
+            android:layout_alignBottom="@id/protractor"
             android:layout_width="20dp"
             android:layout_height="20dp"/>
 
         <View
             android:id="@+id/confirm"
             android:background="@drawable/ic_confirm"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"
+            android:layout_alignBottom="@id/protractor"
+            android:layout_alignEnd="@id/protractor"
+            android:alpha="0.5"
             android:layout_marginEnd="100dp"
             android:layout_width="20dp"
             android:layout_height="20dp"/>
@@ -37,12 +39,22 @@
             android:textColor="@color/black"
             android:text="90°"
             android:gravity="center"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"
+            android:layout_alignBottom="@id/protractor"
+            android:layout_alignEnd="@id/protractor"
             android:layout_marginEnd="50dp"
             android:layout_width="wrap_content"
             android:layout_height="20dp"/>
 
     </com.example.tools.protractor.ProtractorTransformer>
+    <View
+        android:id="@+id/circle1"
+        android:background="@drawable/ic_circle"
+        android:layout_width="30dp"
+        android:layout_height="30dp"/>
 
+    <View
+        android:id="@+id/circle2"
+        android:background="@drawable/ic_circle"
+        android:layout_width="30dp"
+        android:layout_height="30dp"/>
 </merge>
