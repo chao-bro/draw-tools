@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.example.tools.compass.CompassHead
+        android:id="@+id/compass_head"
+        android:layout_width="80dp"
+        android:layout_height="80dp">
+        <!--圆规头-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <View
+                android:layout_width="30dp"
+                android:layout_height="0dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="1"
+                android:background="@color/black" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="2"
+                android:background="@color/black" />
+
+        </LinearLayout>
+
+        <View
+            android:id="@+id/close"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/close_btn" />
+
+        <View
+            android:id="@+id/move_all"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="60dp"
+            android:background="@drawable/ic_enlarge" />
+    </com.example.tools.compass.CompassHead>
+
+    <com.example.tools.compass.LeftLegContainer
+        android:id="@+id/left_container"
+        android:layout_width="40dp"
+        android:layout_height="400dp">
+
+        <com.example.tools.compass.LeftLegView
+            android:id="@+id/left_leg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </com.example.tools.compass.LeftLegContainer>
+
+    <com.example.tools.compass.RightLegContainer
+        android:id="@+id/right_container"
+        android:layout_width="40dp"
+        android:layout_height="400dp">
+
+        <com.example.tools.compass.RightLegView
+            android:id="@+id/right_leg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <View
+            android:id="@+id/rotate_right"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="120dp"
+            android:background="@drawable/ic_circle" />
+
+        <View
+            android:id="@+id/rotate_all"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="60dp"
+            android:background="@drawable/rotate_btn" />
+    </com.example.tools.compass.RightLegContainer>
+</merge>

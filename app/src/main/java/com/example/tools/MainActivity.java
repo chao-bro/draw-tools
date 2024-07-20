@@ -7,6 +7,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.tools.adapters.AbstractStrokeViewGroup;
+import com.example.tools.compass.CompassLayout;
 import com.example.tools.protractor.ProtractorLayout;
 import com.example.tools.ruler.RulerLayout;
 import com.example.tools.triangle.TriangleRulerLayout;
@@ -26,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         initViews();
         setEvents();
-        addNewTool(new ProtractorLayout(this));
+        addNewTool(new CompassLayout(this));
     }
 
     private void setEvents() {
@@ -46,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
 
         btProtractor.setOnClickListener(view -> addNewTool(new ProtractorLayout(MainActivity.this)));
 
-        btCompass.setOnClickListener(view -> addNewTool(new RulerLayout(MainActivity.this)));
+        btCompass.setOnClickListener(view -> addNewTool(new CompassLayout(MainActivity.this)));
     }
 
     private void addNewTool(AbstractStrokeViewGroup tool) {

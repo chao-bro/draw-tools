@@ -19,7 +19,6 @@ public class TransferLayout extends RelativeLayout {
         super(context, attrs);
     }
 
-    //弧度
     public float layoutDegree = 0f;
     private float oriX = 0f;
     private float oriY = 0f;
