@@ -28,6 +28,7 @@ public class DrawAreaView extends View {
     }
 
     private void init() {
+        setBackgroundColor(Color.BLACK);
         paint = new Paint();
         paint.setColor(Color.RED);
         paint.setStyle(Paint.Style.STROKE);

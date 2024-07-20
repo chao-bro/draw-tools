@@ -24,8 +24,8 @@ public class ProtractorView extends AbstractBasicView {
     protected void init() {
         bgPaint = new Paint();
         bgPaint.setStyle(Paint.Style.FILL);
-        bgPaint.setColor(Color.BLACK);
-        bgPaint.setAlpha(10);
+        bgPaint.setColor(Color.WHITE);
+        bgPaint.setAlpha(60);
         bgPaint.setAntiAlias(true);
     }
 
@@ -43,6 +43,9 @@ public class ProtractorView extends AbstractBasicView {
         float centerX = getWidth() / 2f;
         float centerY = rectF.height();
 
+        paint.setColor(Color.WHITE);
+        canvas.drawCircle(centerX,centerY,3,paint);
+
         path.reset();
         canvas.drawCircle(centerX, centerY, radius, bgPaint);
         canvas.save();
@@ -53,7 +56,7 @@ public class ProtractorView extends AbstractBasicView {
         double unit = Math.PI / 180;
         float angle = 0f;
         while (angle <= 180f) {
-            boolean needDrawText = false, isSpecial = false; // 是否需要绘制文本
+            boolean needDrawText = false,isSpecial = false; // 是否需要绘制文本
             // 计算线段起始点的坐标
             float startX = centerX + radius * (float) Math.cos(angle * unit);
             float startY = centerY - radius * (float) Math.sin(angle * unit);
@@ -66,7 +69,7 @@ public class ProtractorView extends AbstractBasicView {
                     //长线
                     lineWidth = 2.5f * lineLen;
                     needDrawText = true;
-                    if (angle % 30 == 0) {
+                    if (angle % 180 == 0) {
                         //画满
                         isSpecial = true;
                     }
@@ -91,6 +94,7 @@ public class ProtractorView extends AbstractBasicView {
                         centerY - (radius - lineWidth * 1.5f - textHeight) * (float) Math.sin(angle * unit),
                         paint);
             }
+
             if (needDrawText) { // 如果需要绘制文本
                 float startTextX = centerX + (radius - lineWidth * 1.5f) * (float) Math.cos(angle * unit);
                 float startTextY = centerY - (radius - lineWidth * 1.5f) * (float) Math.sin(angle * unit);
@@ -106,7 +110,6 @@ public class ProtractorView extends AbstractBasicView {
                 canvas.drawText(valueString, textX, textY, paint);
                 canvas.restore();
             }
-
             angle++;
         }
     }

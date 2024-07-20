@@ -44,9 +44,9 @@ public class RulerLayout extends AbstractStrokeViewGroup {
         int heightPixels = displayMetrics.heightPixels;
         int widthPixels = displayMetrics.widthPixels;
         LayoutParams layoutParams = (LayoutParams) transfer.getLayoutParams();
-        layoutParams.width = widthPixels / 2;
+        layoutParams.width = widthPixels / 3;
         transfer.setLayoutParams(layoutParams);
-        defaultX = (float) (widthPixels - transfer.getWidth()) / 2;
+        defaultX = widthPixels / 3f;
         defaultY = heightPixels / 2f - dp2px(50f) / 2;
         transfer.setTranslationX(defaultX);
         transfer.setTranslationY(defaultY);
