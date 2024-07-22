@@ -43,7 +43,6 @@ public class TriangleRulerLayout extends AbstractStrokeViewGroup {
         layoutParams.width = min;
         layoutParams.height = min;
         transformer.setLayoutParams(layoutParams);
-
         LayoutParams paramsTv = (LayoutParams) tvResult.getLayoutParams();
         paramsTv.setMargins(min / 5,
                 min / 5,
