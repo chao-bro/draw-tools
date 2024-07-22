@@ -80,4 +80,8 @@ public class TransferLayout extends RelativeLayout {
         return isClockwise ? (float) Math.toDegrees(radian) : -(float) Math.toDegrees(radian);
     }
 
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        return false;
+    }
 }

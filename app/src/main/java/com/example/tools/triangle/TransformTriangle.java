@@ -78,4 +78,9 @@ public class TransformTriangle extends RelativeLayout {
         // 计算旋转角度，顺时针为正，逆时针为负
         return isClockwise ? (float) Math.toDegrees(radian) : -(float) Math.toDegrees(radian);
     }
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        return false;
+    }
+
 }

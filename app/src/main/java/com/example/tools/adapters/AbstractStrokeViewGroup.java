@@ -75,29 +75,12 @@ public abstract class AbstractStrokeViewGroup extends RelativeLayout {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                isDrawing = true;
-                startX = event.getX();
-                startY = event.getY();
-                path.moveTo(startX, startY);
-                break;
-            case MotionEvent.ACTION_MOVE:
-                float x = event.getX();
-                float y = event.getY();
-                path.lineTo(x, y);
-                startX = x;
-                startY = y;
-                invalidate();
-                break;
-            case MotionEvent.ACTION_UP:
-                isDrawing = false;
-                onDeleteListener.copyPath(path);
-                path.reset();
-                break;
-            default:
-                break;
-        }
-        return true;
+        return false;
     }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        return false;
+    }
+
 }

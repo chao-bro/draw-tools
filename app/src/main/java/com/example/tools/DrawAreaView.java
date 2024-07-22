@@ -50,7 +50,6 @@ public class DrawAreaView extends View {
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
                 startX = (int) event.getRawX();
@@ -79,7 +78,6 @@ public class DrawAreaView extends View {
         this.path.addPath(path);
         invalidate();
     }
-
 
     public void drawOnMe(Path path, Paint paint) {
         switch (paint.getStyle()) {
