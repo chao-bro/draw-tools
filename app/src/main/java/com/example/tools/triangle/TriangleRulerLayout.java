@@ -130,7 +130,6 @@ public class TriangleRulerLayout extends AbstractStrokeViewGroup {
         //变大
         enlarge.setOnTouchListener(new OnTouchListener() {
             float sx, sy;
-
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 switch (motionEvent.getActionMasked()) {
@@ -146,8 +145,13 @@ public class TriangleRulerLayout extends AbstractStrokeViewGroup {
                         ViewGroup.LayoutParams params = transformer.getLayoutParams();
                         params.height += (int) len;
                         params.width += (int) len;
-                        if(params.height <= dp2px(160)){
-                            break;
+                        if(params.height <= dp2px(240)){
+                            params.height = (int) dp2px(240);
+                            params.width = (int) dp2px(240);
+                        }
+                        if (params.height >= screenHeight) {
+                            params.height = screenHeight;
+                            params.width = screenHeight;
                         }
                         transformer.setLayoutParams(params);
                         sx = x;
@@ -197,11 +201,11 @@ public class TriangleRulerLayout extends AbstractStrokeViewGroup {
                         if (Double.isInfinite(k1)) {
                             //垂直
                             path.lineTo(cenX, rawY);
-                            res = (rawY - dsy) / interval / 5;
+                            res = (rawY - dsy) / interval / 10;
                         } else if (Double.isInfinite(k2)) {
                             //水平
                             path.lineTo(rawX, cenY);
-                            res = (rawX - dsx) / interval / 5;
+                            res = (rawX - dsx) / interval / 10;
                         }
                     } else {
                         b1 = cenY - k1 * cenX;
@@ -211,7 +215,7 @@ public class TriangleRulerLayout extends AbstractStrokeViewGroup {
                         dey = (float) (k1 * xj + b1);
                         path.lineTo(dex, dey);
                         res = (float)
-                                Math.sqrt(Math.pow(dex - dsx, 2) + Math.pow(dey - dsy, 2)) / interval / 5;
+                                Math.sqrt(Math.pow(dex - dsx, 2) + Math.pow(dey - dsy, 2)) / interval / 10;
                     }
                     String text = String.format(Locale.getDefault(), "%.2f", Math.abs(res));
                     result.setText(text);
@@ -260,11 +264,11 @@ public class TriangleRulerLayout extends AbstractStrokeViewGroup {
                         if (Double.isInfinite(k1)) {
                             //纵向画线区域水平
                             path.lineTo(rawX, cenY);
-                            res = (rawX - dsx) / interval / 5;
+                            res = (rawX - dsx) / interval / 10;
                         } else if (Double.isInfinite(k2)) {
                             //纵向画线区域垂直
                             path.lineTo(cenX, rawY);
-                            res = (rawY - dsy) / interval / 5;
+                            res = (rawY - dsy) / interval / 10;
                         }
                     } else {
                         b2 = cenY - k2 * cenX;
@@ -273,7 +277,7 @@ public class TriangleRulerLayout extends AbstractStrokeViewGroup {
                         dex = xj;
                         dey = (float) (k1 * xj + b1);
                         path.lineTo(dex, dey);
-                        res = (float) Math.sqrt(Math.pow(dex - dsx, 2) + Math.pow(dey - dsy, 2)) / interval / 5;
+                        res = (float) Math.sqrt(Math.pow(dex - dsx, 2) + Math.pow(dey - dsy, 2)) / interval / 10;
                     }
                     String text = String.format(Locale.getDefault(), "%.2f", Math.abs(res));
                     result.setText(text);

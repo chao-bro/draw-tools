@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
+import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -15,6 +16,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -31,10 +34,11 @@ public class ProtractorLayout extends AbstractStrokeViewGroup {
 
     //量角器的长宽
     private int width, height;
-    private Paint linePaint;
-    private Path linePath;
+    private Paint linePaint, toolPaint;
+    private Path linePath, toolPath;
     private float centerX, centerY;
     private boolean isFirstLoad;
+    private float c1CX, c2CX, c1CY, c2CY;
 
     public ProtractorLayout(Context context) {
         super(context);
@@ -56,10 +60,19 @@ public class ProtractorLayout extends AbstractStrokeViewGroup {
         linePaint.setStrokeWidth(3);
         linePaint.setAlpha(120);
         linePaint.setStyle(Paint.Style.STROKE);
+        toolPath = new Path();
+        toolPaint = new Paint();
 
         //设置屏幕自适应大小
+        setDefaultLocAndSize();
+        setListeners();
+    }
+
+    private void setDefaultLocAndSize() {
         height = screenHeight / 3;
-        width = screenWidth / 3;
+        width = screenWidth / 4;
+
+        //容器
         LayoutParams params = (LayoutParams) transformer.getLayoutParams();
         if (height > width) {
             height = width / 2;
@@ -69,27 +82,49 @@ public class ProtractorLayout extends AbstractStrokeViewGroup {
         params.height = height;
         params.width = width;
         transformer.setLayoutParams(params);
+
+        //删除按钮
+        LayoutParams paramClose = (LayoutParams) vClose.getLayoutParams();
+        paramClose.height = height / 12;
+        paramClose.width = height / 12;
+        paramClose.setMargins(height / 10, 0, 0, 0);
+        vClose.setLayoutParams(paramClose);
+
+        //角度文本
+        LayoutParams paramTvAngle = (LayoutParams) tvAngle.getLayoutParams();
+        paramTvAngle.height = height / 10;
+        paramTvAngle.width = height / 5;
+        paramTvAngle.setMargins(width / 2 - height / 10, height / 3, 0, 0);
+        tvAngle.setLayoutParams(paramTvAngle);
+
+        //画角，画弧度，画扇形。画三角，画圆，画填充圆
+        int size = width * 2 / 3;
+        LayoutParams paramLl = (LayoutParams) options.getLayoutParams();
+        paramLl.width = size;
+        paramLl.height = Math.max(size / 10, 25);
+        paramLl.setMargins(width / 6, height * 3 / 4, 0, 0);
+        options.setLayoutParams(paramLl);
+
         //设置偏移
         float transX = (screenWidth - width) / 2f;
         float transY = (screenHeight - height) / 2f;
         transformer.setTranslationX(transX);
         transformer.setTranslationY(transY);
-        setListeners();
+        centerX = width / 2f + transformer.getTranslationX();
+        centerY = 0.9f * height + transformer.getTranslationY();
     }
-
-    private float c1CX, c2CX, c1CY, c2CY;
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
         //根据height和width求得两个圆的中心
-        if(isFirstLoad){
-            c1CX = width / 2f + transformer.getTranslationX();
-            centerX = c1CX;
-            c1CY = transformer.getTranslationY() - vCircle1.getHeight() / 2f;
-            c2CX = transformer.getTranslationX() + width + vCircle2.getWidth() / 2f;
-            c2CY = 0.9f * height + transformer.getTranslationY();
-            centerY = c2CY;
+        if (isFirstLoad) {
+            float cx = transformer.getTranslationX() + width + vCircle2.getWidth() / 2f;
+            float cy = 0.9f * height + transformer.getTranslationY();
+            c1CX = cx;
+            c1CY = cy;
+            c2CX = cx;
+            c2CY = cy;
             vCircle1.setTranslationX(c1CX - vCircle1.getWidth() / 2f);
             vCircle1.setTranslationY(c1CY - vCircle1.getHeight() / 2f);
             vCircle2.setTranslationX(c2CX - vCircle2.getWidth() / 2f);
@@ -98,21 +133,15 @@ public class ProtractorLayout extends AbstractStrokeViewGroup {
         }
     }
 
-
     @Override
     protected void onDraw(@NonNull Canvas canvas) {
         super.onDraw(canvas);
         linePath.reset();
         linePath.moveTo(centerX, centerY);
-        Log.d(TAG, "onDraw: c1cx = " + c1CX);
         linePath.lineTo(c1CX, c1CY);
         linePath.moveTo(centerX, centerY);
         linePath.lineTo(c2CX, c2CY);
         canvas.drawPath(linePath, linePaint);
-        if (paintToParent) {
-            onDeleteListener.copyPath(linePath);
-            paintToParent = false;
-        }
     }
 
     float sx, sy;
@@ -204,12 +233,59 @@ public class ProtractorLayout extends AbstractStrokeViewGroup {
         vCircle1.setOnTouchListener(circleTouchListener);
         vCircle2.setOnTouchListener(circleTouchListener);
 
-        //确认按钮
-        vConfirm.setOnClickListener(view -> {
-            //画线
-            paintToParent = true;
-            invalidate();
-        });
+        //画角
+
+        OnClickListener toolOnClickListener = view -> {
+            int id = view.getId();
+            toolPath.reset();
+            double r1 = Math.sqrt(Math.pow(c1CX - centerX, 2) + Math.pow(c1CY - centerY, 2));
+            double r2 = Math.sqrt(Math.pow(c2CX - centerX, 2) + Math.pow(c2CY - centerY, 2));
+            float radius = (float) Math.min(r1, r2);
+            double deg1 = Math.toDegrees(Math.atan2(c1CY - centerY, c1CX - centerX));
+            double deg2 = Math.toDegrees(Math.atan2(c2CY - centerY, c2CX - centerX));
+            RectF rectF = new RectF(
+                    centerX - radius, centerY - radius,
+                    centerX + radius, centerY + radius);
+            // 计算圆弧的起始角度和扫过的角度
+            float startAngle = (float) deg1;
+            float sweepAngle = (float) (deg2 - deg1);
+            if (id == ivDegree.getId()) {
+                toolPaint.setStyle(Paint.Style.STROKE);
+                toolPath.moveTo(centerX, centerY);
+                toolPath.lineTo(c1CX, c1CY);
+                toolPath.moveTo(centerX, centerY);
+                toolPath.lineTo(c2CX, c2CY);
+            } else if (id == ivRadians.getId()) {
+                toolPaint.setStyle(Paint.Style.STROKE);
+                // 添加圆弧到路径中
+                toolPath.arcTo(rectF, startAngle, sweepAngle);
+            } else if (id == ivTriangle.getId()) {
+                toolPaint.setStyle(Paint.Style.STROKE);
+                toolPath.moveTo(centerX, centerY);
+                toolPath.lineTo(c1CX, c1CY);
+                toolPath.lineTo(c2CX, c2CY);
+                toolPath.close();
+            } else if (id == ivSector.getId()) {
+                toolPaint.setStyle(Paint.Style.FILL);
+                toolPath.moveTo(centerX,centerY);
+                toolPath.arcTo(rectF, startAngle, sweepAngle);
+                toolPath.close();
+            } else if (id == ivCircle.getId()) {
+                toolPaint.setStyle(Paint.Style.STROKE);
+                toolPath.addCircle(centerX, centerY, radius, Path.Direction.CW);
+                toolPath.addCircle(centerX, centerY, 1, Path.Direction.CW);
+            } else if (id == ivCircleFilled.getId()) {
+                toolPaint.setStyle(Paint.Style.FILL);
+                toolPath.addCircle(centerX, centerY, radius, Path.Direction.CW);
+            }
+            onDeleteListener.copyPath(toolPath, toolPaint);
+        };
+        ivDegree.setOnClickListener(toolOnClickListener);
+        ivRadians.setOnClickListener(toolOnClickListener);
+        ivTriangle.setOnClickListener(toolOnClickListener);
+        ivSector.setOnClickListener(toolOnClickListener);
+        ivCircle.setOnClickListener(toolOnClickListener);
+        ivCircleFilled.setOnClickListener(toolOnClickListener);
     }
 
     //计算两条线的夹角
@@ -232,22 +308,28 @@ public class ProtractorLayout extends AbstractStrokeViewGroup {
         return Math.toDegrees(angleInRadians);
     }
 
-
     private TextView tvAngle;
-    private View vClose, vConfirm, vCircle1, vCircle2;
+    private View vClose, vCircle1, vCircle2;
     private ProtractorTransformer transformer;
     private ProtractorView protractor;
+    private ImageView ivDegree, ivRadians, ivTriangle, ivSector, ivCircle, ivCircleFilled;
+    private LinearLayout options;
 
     private void inflateAndInitViews() {
         LayoutInflater.from(context).inflate(R.layout.protractor_view, this);
         setBackgroundColor(Color.TRANSPARENT);
         tvAngle = findViewById(R.id.degree);
         vClose = findViewById(R.id.close);
-        vConfirm = findViewById(R.id.confirm);
         transformer = findViewById(R.id.transformer);
         protractor = findViewById(R.id.protractor);
         vCircle1 = findViewById(R.id.circle1);
         vCircle2 = findViewById(R.id.circle2);
+        options = findViewById(R.id.ll_options);
+        ivDegree = findViewById(R.id.iv_degree);
+        ivRadians = findViewById(R.id.iv_radians);
+        ivTriangle = findViewById(R.id.iv_triangle);
+        ivSector = findViewById(R.id.iv_sector);
+        ivCircle = findViewById(R.id.iv_circle);
+        ivCircleFilled = findViewById(R.id.iv_circle_filled);
     }
-
 }

@@ -1,5 +1,7 @@
 package com.example.tools;
 
+import android.graphics.Paint;
+import android.graphics.Path;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -7,6 +9,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.tools.adapters.AbstractStrokeViewGroup;
+import com.example.tools.listener.OnDeleteListener;
 import com.example.tools.protractor.ProtractorLayout;
 import com.example.tools.ruler.RulerLayout;
 import com.example.tools.triangle.TriangleRulerLayout;
@@ -52,7 +55,17 @@ public class MainActivity extends AppCompatActivity {
     private void addNewTool(AbstractStrokeViewGroup tool) {
         main.removeView(toolV);
         toolV = tool;
-        toolV.setOnDeleteListener(path -> MainActivity.this.drawAreaView.drawOnMe(path));
+        toolV.setOnDeleteListener(new OnDeleteListener() {
+            @Override
+            public void copyPath(Path path) {
+                MainActivity.this.drawAreaView.drawOnMe(path);
+            }
+
+            @Override
+            public void copyPath(Path path, Paint paint) {
+                MainActivity.this.drawAreaView.drawOnMe(path,paint);
+            }
+        });
         main.addView(toolV);
         tools.setVisibility(View.GONE);
         main.bringChildToFront(option);

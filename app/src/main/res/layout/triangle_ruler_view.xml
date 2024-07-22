@@ -39,10 +39,9 @@
         <View
             android:id="@+id/enlarge"
             android:layout_centerInParent="true"
-
             android:layout_width="25dp"
             android:layout_height="25dp"
-            android:background="@drawable/ic_prolong"/>
+            android:background="@drawable/ic_enlarge"/>
 
         <View
             android:id="@+id/close"

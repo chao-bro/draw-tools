@@ -149,10 +149,10 @@ public class RulerLayout extends AbstractStrokeViewGroup {
                     if (Double.isInfinite(k1) || Double.isInfinite(k2)) {
                         if (Double.isInfinite(k1)) {
                             path.lineTo(cenX, motionEvent.getRawY());
-                            drawLen = (motionEvent.getRawY() - sy) / interval / 5;
+                            drawLen = (motionEvent.getRawY() - sy) / interval / 10;
                         } else if (Double.isInfinite(k2)) {
                             path.lineTo(motionEvent.getRawX(), cenY);
-                            drawLen = (motionEvent.getRawX() - sx) / interval / 5;
+                            drawLen = (motionEvent.getRawX() - sx) / interval / 10;
                         }
                         text = String.format(Locale.getDefault(), "%.2f", drawLen);
                         result.setText(text);
@@ -167,7 +167,7 @@ public class RulerLayout extends AbstractStrokeViewGroup {
                     ey = (float) (k1 * xj + b1);
                     path.lineTo(ex, ey);
                     invalidate();
-                    drawLen = (Math.sqrt(Math.pow(ex - sx, 2) + Math.pow(ey - sy, 2))) / interval / 5;
+                    drawLen = (Math.sqrt(Math.pow(ex - sx, 2) + Math.pow(ey - sy, 2))) / interval / 10;
                     text = String.format(Locale.getDefault(), "%.2f", drawLen);
                     result.setText(text);
                     break;
@@ -220,7 +220,11 @@ public class RulerLayout extends AbstractStrokeViewGroup {
                     //直接修改直尺容器的宽度
                     LayoutParams layoutParams = (LayoutParams) transfer.getLayoutParams();
                     layoutParams.width = transfer.getMeasuredWidth() + wid;
-                    layoutParams.height = transfer.getMeasuredHeight();
+                    if(layoutParams.width >= screenWidth * 3 / 4){
+                        layoutParams.width = screenWidth * 3 / 4;
+                    } else if (layoutParams.width <= screenWidth / 5) {
+                        layoutParams.width = screenWidth / 5;
+                    }
                     transfer.setLayoutParams(layoutParams);
                     //每次触发都更新至上一次触发点
                     lastX = rawX;

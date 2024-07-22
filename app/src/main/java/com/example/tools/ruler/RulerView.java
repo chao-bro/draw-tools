@@ -40,30 +40,38 @@ public class RulerView extends AbstractBasicView {
         //画直尺
         canvas.drawRoundRect(0f, 0f, getWidth(), getHeight(), 0.5f, 0.5f, bgPaint);
         canvas.drawRoundRect(0f, 0f, getWidth(), getHeight(), 0.5f, 0.5f, paint);
-        int numKD = getWidth() / interval - 2;
+        int numKD = getWidth() / interval - 10;
+        numKD = numKD - numKD %10 + 1;
         float minLength = getHeight() / 8f;
         //画刻度
-        for (int i = 1; i <= numKD; i++) {
-            int wid = i * interval;
-            if (i % 5 == 1) {
-                canvas.drawLine(wid,
-                        0f,
-                        wid,
-                        minLength * 2.5f,
-                        paint);
-                String text = (i - 1) / 5 + "";
-                canvas.drawText(text,
-                        wid - paint.measureText(text) / 2,
-                        minLength * 2.5f + (float) textHeight / 2,
-                        paint);
+        for (int i = 0; i < numKD; i++) {
+            int wid = (i + 5) * interval;
+            float lineLen = 0f;
+            boolean drawText = false;
+            String text = i / 10 + "";
+            if (i % 5 == 0) {
+                if(i % 10 == 0){
+                    drawText = true;
+                    lineLen = 2.5f * minLength;
+                } else {
+                    lineLen = 1.5f * minLength;
+                }
             } else {
                 //小刻度
-                canvas.drawLine(wid,
-                        0f,
-                        wid,
-                        minLength,
+                lineLen = minLength;
+            }
+            canvas.drawLine(wid,
+                    0f,
+                    wid,
+                    lineLen,
+                    paint);
+            if(drawText){
+                canvas.drawText(text,
+                        wid - paint.measureText(text) / 2,
+                        lineLen + (float) textHeight / 2,
                         paint);
             }
+
         }
 
     }

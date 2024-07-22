@@ -25,7 +25,7 @@ public class ProtractorView extends AbstractBasicView {
         bgPaint = new Paint();
         bgPaint.setStyle(Paint.Style.FILL);
         bgPaint.setColor(Color.WHITE);
-        bgPaint.setAlpha(60);
+        bgPaint.setAlpha(120);
         bgPaint.setAntiAlias(true);
     }
 
@@ -42,10 +42,8 @@ public class ProtractorView extends AbstractBasicView {
         float lineLen = radius / 14;
         float centerX = getWidth() / 2f;
         float centerY = rectF.height();
-
-        paint.setColor(Color.WHITE);
-        canvas.drawCircle(centerX,centerY,3,paint);
-
+        canvas.drawCircle(centerX,centerY,5,bgPaint);
+        bgPaint.setAlpha(50);
         path.reset();
         canvas.drawCircle(centerX, centerY, radius, bgPaint);
         canvas.save();

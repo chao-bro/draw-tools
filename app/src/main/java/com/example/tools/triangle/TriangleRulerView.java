@@ -57,35 +57,45 @@ public class TriangleRulerView extends AbstractBasicView {
         inPath.close();
         canvas.drawPath(inPath, paint);
         //绘制刻度线 两条
-        float lineLen = inSideLen / 10;//取边宽的 1 / 10 为最短线的长度
-        int num = getWidth() / interval - 10;//左右留白各一个单位长度
+        float minLen = inSideLen / 10;//取边宽的 1 / 10 为最短线的长度
+        int num = getWidth() / interval - 16;//左右留白各半个单位长度
+        num = num - num % 10 + 1;
         Paint.FontMetrics fm = paint.getFontMetrics();
         float fh = fm.bottom - fm.top;
+        float lineLen = 0f;
         for (int i = 0; i < num; i++) {
-            int x = (5 + i) * interval;
+            int x = (8 + i) * interval;
+            String text = i / 10 + "";
+            boolean needDrawText = false;
             if (i % 5 == 0) {
-                String text = i / 5 + "";
-                canvas.drawLine(x, 0f, x, lineLen * 2, paint);
-                canvas.drawLine(0f, getWidth() - x,
-                        lineLen * 2, getWidth() - x,
-                        paint);
+                if (i % 10 == 0) {
+                    lineLen = minLen * 2f;
+                    needDrawText = true;
+                } else {
+                    lineLen = minLen * 1.3f;
+                }
+            } else {
+                lineLen = minLen;
+            }
+
+            canvas.drawLine(x, 0f, x, lineLen, paint);//横轴刻度
+            canvas.drawLine(0f, getWidth() - x,
+                    lineLen, getWidth() - x,
+                    paint);//纵轴刻度
+
+            if(needDrawText){
                 canvas.drawText(text,
-                        x - paint.measureText(text) / 2, lineLen * 2 + fh / 2,
+                        x - paint.measureText(text) / 2, lineLen + fh / 2,
                         paint);
                 canvas.save();
                 canvas.rotate(-90, 0, 0);
                 float textX = x - getWidth() - paint.measureText(text) / 2;
-                float textY = lineLen * 2 + fh / 2;
+                float textY = lineLen + fh / 2;
                 canvas.drawText(text,
                         textX,
                         textY,
                         paint);
                 canvas.restore();
-            } else {
-                canvas.drawLine(x, 0f, x, lineLen, paint);
-                canvas.drawLine(0f, getWidth() - x,
-                        lineLen, getWidth() - x,
-                        paint);
             }
         }
     }
