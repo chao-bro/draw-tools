@@ -222,7 +222,7 @@ public class ProtractorLayout extends AbstractStrokeViewGroup {
                     view.setTranslationY(ty + dy);
                     //计算夹角
                     angle = calculateAngle(centerX, centerY, c1CX, c1CY, c2CX, c2CY);
-                    text = (int) angle + "°";
+                    text = (int) (angle + 0.5) + "°";
                     tvAngle.setText(text);
                     break;
                 case MotionEvent.ACTION_UP:
@@ -232,8 +232,6 @@ public class ProtractorLayout extends AbstractStrokeViewGroup {
         };
         vCircle1.setOnTouchListener(circleTouchListener);
         vCircle2.setOnTouchListener(circleTouchListener);
-
-        //画角
 
         OnClickListener toolOnClickListener = view -> {
             int id = view.getId();

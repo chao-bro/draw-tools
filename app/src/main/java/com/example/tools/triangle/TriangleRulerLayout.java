@@ -8,7 +8,6 @@ import android.graphics.Point;
 import android.graphics.RectF;
 import android.graphics.Region;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -21,7 +20,6 @@ import androidx.annotation.Nullable;
 
 import com.example.tools.R;
 import com.example.tools.adapters.AbstractStrokeViewGroup;
-import com.example.tools.application.MyApplication;
 
 import java.util.Locale;
 
@@ -40,16 +38,19 @@ public class TriangleRulerLayout extends AbstractStrokeViewGroup {
     protected void init() {
         inflateAndFindViews();
         setBackgroundColor(Color.TRANSPARENT);
-        DisplayMetrics dm = context.getResources().getDisplayMetrics();
-        int heightPixels = dm.heightPixels;
-        int widthPixels = dm.widthPixels;
-        int min = Math.min(heightPixels, widthPixels) / 2;
+        int min = Math.min(screenWidth, screenHeight) / 2;
         LayoutParams layoutParams = (LayoutParams) transformer.getLayoutParams();
         layoutParams.width = min;
         layoutParams.height = min;
         transformer.setLayoutParams(layoutParams);
-        float transX = (widthPixels - min) / 2f;
-        float transY = (heightPixels - min) / 2f;
+
+        LayoutParams paramsTv = (LayoutParams) tvResult.getLayoutParams();
+        paramsTv.setMargins(min / 5,
+                min / 5,
+                0,0);
+        tvResult.setLayoutParams(paramsTv);
+        float transX = (screenWidth - min) / 2f;
+        float transY = (screenHeight - min) / 2f;
         transformer.setTranslationX(transX);
         transformer.setTranslationY(transY);
         setTouchEvents();
@@ -145,9 +146,9 @@ public class TriangleRulerLayout extends AbstractStrokeViewGroup {
                         ViewGroup.LayoutParams params = transformer.getLayoutParams();
                         params.height += (int) len;
                         params.width += (int) len;
-                        if(params.height <= dp2px(240)){
-                            params.height = (int) dp2px(240);
-                            params.width = (int) dp2px(240);
+                        if(params.height <= 410){
+                            params.height = 410;
+                            params.width = 410;
                         }
                         if (params.height >= screenHeight) {
                             params.height = screenHeight;
@@ -218,7 +219,7 @@ public class TriangleRulerLayout extends AbstractStrokeViewGroup {
                                 Math.sqrt(Math.pow(dex - dsx, 2) + Math.pow(dey - dsy, 2)) / interval / 10;
                     }
                     String text = String.format(Locale.getDefault(), "%.2f", Math.abs(res));
-                    result.setText(text);
+                    tvResult.setText(text);
                     invalidate();
                     break;
                 case MotionEvent.ACTION_UP:
@@ -280,7 +281,7 @@ public class TriangleRulerLayout extends AbstractStrokeViewGroup {
                         res = (float) Math.sqrt(Math.pow(dex - dsx, 2) + Math.pow(dey - dsy, 2)) / interval / 10;
                     }
                     String text = String.format(Locale.getDefault(), "%.2f", Math.abs(res));
-                    result.setText(text);
+                    tvResult.setText(text);
                     invalidate();
                     break;
                 case MotionEvent.ACTION_UP:
@@ -303,7 +304,7 @@ public class TriangleRulerLayout extends AbstractStrokeViewGroup {
     private View close, rotate, enlarge, drawHor, drawVer;
     private TriangleRulerView triangle;
     private TransformTriangle transformer;
-    private TextView result;
+    private TextView tvResult;
 
     private void inflateAndFindViews() {
         LayoutInflater.from(context).inflate(R.layout.triangle_ruler_view, this);
@@ -315,6 +316,6 @@ public class TriangleRulerLayout extends AbstractStrokeViewGroup {
         drawVer = findViewById(R.id.draw_area_v);
         transformer = findViewById(R.id.transformer);
         triangle = findViewById(R.id.triangle_ruler);
-        result = findViewById(R.id.result);
+        tvResult = findViewById(R.id.tv_result);
     }
 }
