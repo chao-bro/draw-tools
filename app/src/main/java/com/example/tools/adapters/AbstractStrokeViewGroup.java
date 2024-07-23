@@ -20,7 +20,7 @@ public abstract class AbstractStrokeViewGroup extends RelativeLayout {
     //画笔样式
     protected final Paint.Style PAINT_STYLE = Paint.Style.STROKE;
     //抗锯齿
-    protected final boolean PAINT_ANTIALIAS = true;
+    protected final boolean PAINT_ANTIALIAS_TRUE = true;
     //画笔宽度
     protected final int PAINT_STROKE_WIDTH = 3;
     //两个刻度之间的宽度
@@ -52,7 +52,7 @@ public abstract class AbstractStrokeViewGroup extends RelativeLayout {
         paint.setColor(PAINT_COLOR);
         paint.setStrokeWidth(PAINT_STROKE_WIDTH);
         paint.setStyle(PAINT_STYLE);
-        paint.setAntiAlias(PAINT_ANTIALIAS);
+        paint.setAntiAlias(PAINT_ANTIALIAS_TRUE);
         path = new Path();
         DisplayMetrics dm = context.getResources().getDisplayMetrics();
         screenHeight = dm.heightPixels;

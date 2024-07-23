@@ -5,7 +5,6 @@ import android.graphics.Path;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -21,38 +20,36 @@ public class MainActivity extends AppCompatActivity {
 
     private FrameLayout mMainContainer;
     private boolean isToolsVisible = false;
-    private AbstractStrokeViewGroup toolV;
     private HashSet<AbstractStrokeViewGroup> viewSet;
-    private LinearLayout tools, option;
-    private DrawAreaView drawAreaView;
-    private Button btAdd, btRuler, btTriangle, btProtractor;
+    private LinearLayout mToolsBtnLl, mOptionBtnLl;
+    private DrawAreaView mDrawAreaView;
+    private Button mAddToolsBtn, mAddRulerBtn, mAddTriangleBtn, mAddProtractorBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
+        viewSet = new HashSet<>();
         initViews();
         setEvents();
-        viewSet = new HashSet<>();
     }
 
     private void setEvents() {
-        btAdd.setOnClickListener(view -> {
+        mAddToolsBtn.setOnClickListener(view -> {
             if (!isToolsVisible) {
-                tools.setVisibility(View.VISIBLE);
+                mToolsBtnLl.setVisibility(View.VISIBLE);
                 isToolsVisible = true;
             } else {
-                tools.setVisibility(View.GONE);
+                mToolsBtnLl.setVisibility(View.GONE);
                 isToolsVisible = false;
             }
         });
 
-        btRuler.setOnClickListener(view -> addNewTool(new RulerLayout(MainActivity.this)));
+        mAddRulerBtn.setOnClickListener(view -> addNewTool(new RulerLayout(MainActivity.this)));
 
-        btTriangle.setOnClickListener(view -> addNewTool(new TriangleRulerLayout(MainActivity.this)));
+        mAddTriangleBtn.setOnClickListener(view -> addNewTool(new TriangleRulerLayout(MainActivity.this)));
 
-        btProtractor.setOnClickListener(view -> addNewTool(new ProtractorLayout(MainActivity.this)));
+        mAddProtractorBtn.setOnClickListener(view -> addNewTool(new ProtractorLayout(MainActivity.this)));
 
     }
 
@@ -60,15 +57,14 @@ public class MainActivity extends AppCompatActivity {
         tool.setOnDeleteListener(new OnDeleteListener() {
             @Override
             public void copyPath(Path path) {
-                MainActivity.this.drawAreaView.drawOnMe(path);
+                MainActivity.this.mDrawAreaView.drawOnMe(path);
             }
 
             @Override
             public void copyPath(Path path, Paint paint) {
-                MainActivity.this.drawAreaView.drawOnMe(path, paint);
+                MainActivity.this.mDrawAreaView.drawOnMe(path, paint);
             }
         });
-        toolV = tool;
         for (AbstractStrokeViewGroup t : viewSet) {
             if (tool.getClass() == t.getClass()) {
                 //存在
@@ -77,35 +73,32 @@ public class MainActivity extends AppCompatActivity {
                 break;
             }
         }
-        mMainContainer.addView(toolV);
-        viewSet.add(toolV);
-        tools.setVisibility(View.GONE);
-        mMainContainer.bringChildToFront(option);
+        mMainContainer.addView(tool);
+        viewSet.add(tool);
+        mToolsBtnLl.setVisibility(View.GONE);
+        mMainContainer.bringChildToFront(mOptionBtnLl);
         isToolsVisible = false;
     }
 
     private void initViews() {
-        btAdd = findViewById(R.id.rulerset_add_tools);
-        tools = findViewById(R.id.rulerset_tool_list);
-        tools.setVisibility(View.GONE);
-        option = findViewById(R.id.rulerset_option);
-        drawAreaView = findViewById(R.id.draw_area);
+        mAddToolsBtn = findViewById(R.id.rulerset_add_tools);
+        mToolsBtnLl = findViewById(R.id.rulerset_tool_list);
+        mToolsBtnLl.setVisibility(View.GONE);
+        mOptionBtnLl = findViewById(R.id.rulerset_option);
+        mDrawAreaView = findViewById(R.id.draw_area);
         mMainContainer = findViewById(R.id.main);
-        btRuler = findViewById(R.id.rulerset_bt_ruler);
-        btTriangle = findViewById(R.id.rulerset_bt_triangle);
-        btProtractor = findViewById(R.id.rulerset_bt_protractor);
+        mAddRulerBtn = findViewById(R.id.rulerset_bt_ruler);
+        mAddTriangleBtn = findViewById(R.id.rulerset_bt_triangle);
+        mAddProtractorBtn = findViewById(R.id.rulerset_bt_protractor);
     }
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         if (!super.dispatchTouchEvent(ev)) {
-            if (!toolV.dispatchTouchEvent(ev)) {
-                for (AbstractStrokeViewGroup t : viewSet) {
-                    if (t.dispatchTouchEvent(ev)) {
-                        toolV = t;
-                        mMainContainer.bringChildToFront(toolV);
-                        break;
-                    }
+            for (AbstractStrokeViewGroup t : viewSet) {
+                if (t.dispatchTouchEvent(ev)) {
+                    mMainContainer.bringChildToFront(t);
+                    break;
                 }
             }
         }

@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import com.example.tools.adapters.AbstractBasicView;
 
 public class ProtractorView extends AbstractBasicView {
+
     private Paint bgPaint;
 
     public ProtractorView(Context context, @Nullable AttributeSet attrs) {
@@ -23,10 +24,10 @@ public class ProtractorView extends AbstractBasicView {
     @Override
     protected void init() {
         bgPaint = new Paint();
-        bgPaint.setStyle(Paint.Style.FILL);
-        bgPaint.setColor(Color.WHITE);
-        bgPaint.setAlpha(60);
-        bgPaint.setAntiAlias(true);
+        bgPaint.setStyle(PAINT_STYLE_FILL);
+        bgPaint.setColor(PAINT_COLOR_WHITE);
+        bgPaint.setAlpha(BACKGROUND_PAINT_ALPHA);
+        bgPaint.setAntiAlias(ANTIALIAS_TRUE);
     }
 
     @Override
@@ -49,7 +50,6 @@ public class ProtractorView extends AbstractBasicView {
         canvas.save();
         canvas.clipOutRect(0f, centerY, getWidth(), getHeight());
         canvas.restore();
-
         //画刻度
         double unit = Math.PI / 180;
         float angle = 0f;
@@ -58,10 +58,8 @@ public class ProtractorView extends AbstractBasicView {
             // 计算线段起始点的坐标
             float startX = centerX + radius * (float) Math.cos(angle * unit);
             float startY = centerY - radius * (float) Math.sin(angle * unit);
-
             float endX, endY; // 线段结束点的坐标
             float lineWidth; // 根据角度确定线段宽度
-
             if (angle % 5 == 0) {
                 if (angle % 10 == 0) {
                     //长线
@@ -82,7 +80,6 @@ public class ProtractorView extends AbstractBasicView {
             endX = centerX + (radius - lineWidth) * (float) Math.cos(angle * unit);
             endY = centerY - (radius - lineWidth) * (float) Math.sin(angle * unit);
             canvas.drawLine(startX,startY,endX,endY,paint);
-
             String valueString = (int)angle + "°"; // 构造角度值的字符串
             float textWidth = fontPaint.measureText(valueString); // 测量文本的宽度
             float textHeight = fontPaint.descent() - fontPaint.ascent(); // 测量文本的高度
@@ -92,7 +89,6 @@ public class ProtractorView extends AbstractBasicView {
                         centerY - (radius - lineWidth * 1.5f - textHeight) * (float) Math.sin(angle * unit),
                         paint);
             }
-
             if (needDrawText) { // 如果需要绘制文本
                 float startTextX = centerX + (radius - lineWidth * 1.5f) * (float) Math.cos(angle * unit);
                 float startTextY = centerY - (radius - lineWidth * 1.5f) * (float) Math.sin(angle * unit);
