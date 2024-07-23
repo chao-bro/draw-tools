@@ -29,9 +29,8 @@ public class RulerView extends AbstractBasicView {
         bgPaint = new Paint();
         bgPaint.setColor(Color.WHITE);
         bgPaint.setStyle(Paint.Style.FILL);
-        bgPaint.setStrokeWidth(3);
         bgPaint.setAntiAlias(true);
-        bgPaint.setAlpha(100);
+        bgPaint.setAlpha(60);
     }
 
     @Override
@@ -67,9 +66,9 @@ public class RulerView extends AbstractBasicView {
                     paint);
             if(drawText){
                 canvas.drawText(text,
-                        wid - paint.measureText(text) / 2,
-                        lineLen + (float) textHeight / 2,
-                        paint);
+                        wid - fontPaint.measureText(text) / 2,
+                        lineLen + textHeight / 2f + 2,
+                        fontPaint);
             }
 
         }

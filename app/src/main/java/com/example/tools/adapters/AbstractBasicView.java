@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -12,7 +13,7 @@ import androidx.annotation.Nullable;
 
 public abstract class AbstractBasicView extends View {
 
-    protected Paint paint;
+    protected Paint paint,fontPaint;
     protected Path path;
     protected Context context;
     protected int interval;
@@ -31,19 +32,19 @@ public abstract class AbstractBasicView extends View {
         path = new Path();
         paint.setColor(Color.WHITE);
         paint.setStyle(Paint.Style.STROKE);
-        paint.setTextSize(12);
+        paint.setStrokeWidth(2);
         paint.setAntiAlias(true);
-        Paint.FontMetrics fm = paint.getFontMetrics();
+
+        fontPaint = new TextPaint();
+        fontPaint.setColor(Color.WHITE);
+        fontPaint.setTextSize(20);
+        fontPaint.setStyle(Paint.Style.FILL);
+        fontPaint.setAntiAlias(true);
+        Paint.FontMetrics fm = fontPaint.getFontMetrics();
         //计算字体的高度
-        textHeight = (int) (fm.bottom - fm.top);
+        textHeight = (int) (fm.descent - fm.ascent);
         init();
     }
 
     protected void init(){}
-
-    protected float dp2px(float dpValue) {
-        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
-        float scale = metrics.density;
-        return (dpValue * scale + 0.5f); // 加上0.5f是为了四舍五入
-    }
 }

@@ -25,7 +25,7 @@ public class ProtractorView extends AbstractBasicView {
         bgPaint = new Paint();
         bgPaint.setStyle(Paint.Style.FILL);
         bgPaint.setColor(Color.WHITE);
-        bgPaint.setAlpha(120);
+        bgPaint.setAlpha(60);
         bgPaint.setAntiAlias(true);
     }
 
@@ -84,8 +84,8 @@ public class ProtractorView extends AbstractBasicView {
             canvas.drawLine(startX,startY,endX,endY,paint);
 
             String valueString = (int)angle + "°"; // 构造角度值的字符串
-            float textWidth = paint.measureText(valueString); // 测量文本的宽度
-            float textHeight = paint.descent() - paint.ascent(); // 测量文本的高度
+            float textWidth = fontPaint.measureText(valueString); // 测量文本的宽度
+            float textHeight = fontPaint.descent() - fontPaint.ascent(); // 测量文本的高度
             if (isSpecial) {
                 canvas.drawLine(centerX,centerY,
                         centerX + (radius - lineWidth * 1.5f - textHeight) * (float) Math.cos(angle * unit),
@@ -102,10 +102,9 @@ public class ProtractorView extends AbstractBasicView {
                 float textX = textCenterX - textWidth / 2;
                 float textY = textCenterY + textHeight / 2;
                 // 绘制旋转后的文本
-                paint.setTextSize(10);
                 canvas.save();
                 canvas.rotate(90f - angle, textCenterX, textCenterY);
-                canvas.drawText(valueString, textX, textY, paint);
+                canvas.drawText(valueString, textX, textY, fontPaint);
                 canvas.restore();
             }
             angle++;

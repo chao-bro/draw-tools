@@ -154,7 +154,7 @@ public class RulerLayout extends AbstractStrokeViewGroup {
                             path.lineTo(motionEvent.getRawX(), cenY);
                             drawLen = (motionEvent.getRawX() - sx) / interval / 10;
                         }
-                        text = String.format(Locale.getDefault(), "%.2f", drawLen);
+                        text = String.format(Locale.getDefault(), "%.2f", Math.abs(drawLen));
                         result.setText(text);
                         break;
                     }
@@ -168,7 +168,7 @@ public class RulerLayout extends AbstractStrokeViewGroup {
                     path.lineTo(ex, ey);
                     invalidate();
                     drawLen = (Math.sqrt(Math.pow(ex - sx, 2) + Math.pow(ey - sy, 2))) / interval / 10;
-                    text = String.format(Locale.getDefault(), "%.2f", drawLen);
+                    text = String.format(Locale.getDefault(), "%.2f", Math.abs(drawLen));
                     result.setText(text);
                     break;
                 case MotionEvent.ACTION_UP:

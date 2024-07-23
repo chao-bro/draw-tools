@@ -8,7 +8,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.tools.adapters.AbstractStrokeViewGroup;
 import com.example.tools.listener.OnDeleteListener;
 import com.example.tools.protractor.ProtractorLayout;
@@ -23,9 +25,9 @@ public class MainActivity extends AppCompatActivity {
     private boolean show = false;
     private AbstractStrokeViewGroup toolV;
     private HashSet<AbstractStrokeViewGroup> viewSet;
-    private LinearLayout tools,option;
+    private LinearLayout tools, option;
     private DrawAreaView drawAreaView;
-    private Button btAdd,btRuler,btTriangle,btProtractor,btCompass;
+    private Button btAdd, btRuler, btTriangle, btProtractor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setEvents() {
         btAdd.setOnClickListener(view -> {
-            if (! show) {
+            if (!show) {
                 tools.setVisibility(View.VISIBLE);
                 show = true;
             } else {
@@ -53,7 +55,6 @@ public class MainActivity extends AppCompatActivity {
 
         btProtractor.setOnClickListener(view -> addNewTool(new ProtractorLayout(MainActivity.this)));
 
-        btCompass.setOnClickListener(view -> addNewTool(new RulerLayout(MainActivity.this)));
     }
 
     private void addNewTool(AbstractStrokeViewGroup tool) {
@@ -65,40 +66,47 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void copyPath(Path path, Paint paint) {
-                MainActivity.this.drawAreaView.drawOnMe(path,paint);
+                MainActivity.this.drawAreaView.drawOnMe(path, paint);
             }
         });
         toolV = tool;
-        if(!viewSet.contains(toolV)){
-            main.addView(toolV);
+        for (AbstractStrokeViewGroup t : viewSet) {
+            if (tool.getClass() == t.getClass()) {
+                //存在
+                main.removeView(t);
+                viewSet.remove(t);
+                break;
+            }
         }
+        main.addView(toolV);
+        viewSet.add(toolV);
         tools.setVisibility(View.GONE);
         main.bringChildToFront(option);
         show = false;
     }
 
     private void initViews() {
-        btAdd  = findViewById(R.id.add_tools);
+        btAdd = findViewById(R.id.add_tools);
         tools = findViewById(R.id.tool_list);
         tools.setVisibility(View.GONE);
         option = findViewById(R.id.option);
         drawAreaView = findViewById(R.id.draw_area);
-//        toolV = new TriangleRulerLayout(this)
         main = findViewById(R.id.main);
         btRuler = findViewById(R.id.bt_ruler);
         btTriangle = findViewById(R.id.bt_triangle);
         btProtractor = findViewById(R.id.bt_protractor);
-        btCompass = findViewById(R.id.bt_compass);
     }
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        if (! super.dispatchTouchEvent(ev)) {
-            for (AbstractStrokeViewGroup t: viewSet) {
-                if (t.dispatchTouchEvent(ev)) {
-                    toolV = t;
-                    main.bringChildToFront(toolV);
-                    break;
+        if (!super.dispatchTouchEvent(ev)) {
+            if (!toolV.dispatchTouchEvent(ev)) {
+                for (AbstractStrokeViewGroup t : viewSet) {
+                    if (t.dispatchTouchEvent(ev)) {
+                        toolV = t;
+                        main.bringChildToFront(toolV);
+                        break;
+                    }
                 }
             }
         }

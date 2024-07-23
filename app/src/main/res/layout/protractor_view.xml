@@ -22,6 +22,14 @@
             android:layout_width="20dp"
             android:layout_height="20dp"/>
 
+        <View
+            android:id="@+id/v_rotate"
+            android:background="@drawable/rotate_btn"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_width="20dp"
+            android:layout_height="20dp"/>
+
         <TextView
             android:id="@+id/degree"
             android:textColor="@color/black"
@@ -29,6 +37,26 @@
             android:text="0°"
             android:textSize="14sp"
             android:gravity="center_horizontal"
+            android:layout_width="60dp"
+            android:layout_height="30dp"/>
+
+        <TextView
+            android:id="@+id/len1"
+            android:textColor="@color/white"
+            android:text="0°"
+            android:textSize="12sp"
+            android:gravity="center_vertical"
+            android:layout_alignParentBottom="true"
+            android:layout_width="60dp"
+            android:layout_height="30dp"/>
+
+        <TextView
+            android:id="@+id/len2"
+            android:textColor="@color/white"
+            android:text="0°"
+            android:textSize="12sp"
+            android:gravity="center_vertical"
+            android:layout_alignParentBottom="true"
             android:layout_width="60dp"
             android:layout_height="30dp"/>
 
@@ -91,13 +119,13 @@
     </com.example.tools.protractor.ProtractorTransformer>
     <View
         android:id="@+id/circle1"
-        android:background="@drawable/circle_point"
+        android:background="@drawable/circle1"
         android:layout_width="30dp"
         android:layout_height="30dp"/>
 
     <View
         android:id="@+id/circle2"
-        android:background="@drawable/circle_point"
+        android:background="@drawable/circle2"
         android:layout_width="30dp"
         android:layout_height="30dp"/>
 </merge>

@@ -40,9 +40,11 @@ public class DrawAreaView extends View {
         fillPaint = new Paint();
         fillPaint.setStyle(Paint.Style.FILL);
         fillPaint.setColor(Color.RED);
+        fillPaint.setStrokeWidth(3);
         strokePaint = new Paint();
         strokePaint.setStyle(Paint.Style.STROKE);
         strokePaint.setColor(Color.RED);
+        strokePaint.setStrokeWidth(3);
     }
 
     int startX, startY;

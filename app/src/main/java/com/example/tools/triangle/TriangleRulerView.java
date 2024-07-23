@@ -60,8 +60,6 @@ public class TriangleRulerView extends AbstractBasicView {
         float minLen = inSideLen / 10;//取边宽的 1 / 10 为最短线的长度
         int num = getWidth() / interval - 16;//左右留白各半个单位长度
         num = num - num % 10 + 1;
-        Paint.FontMetrics fm = paint.getFontMetrics();
-        float fh = fm.bottom - fm.top;
         float lineLen = 0f;
         for (int i = 0; i < num; i++) {
             int x = (8 + i) * interval;
@@ -85,16 +83,16 @@ public class TriangleRulerView extends AbstractBasicView {
 
             if(needDrawText){
                 canvas.drawText(text,
-                        x - paint.measureText(text) / 2, lineLen + fh / 2,
-                        paint);
+                        x - fontPaint.measureText(text) / 2, lineLen + textHeight / 2f,
+                        fontPaint);
                 canvas.save();
                 canvas.rotate(-90, 0, 0);
-                float textX = x - getWidth() - paint.measureText(text) / 2;
-                float textY = lineLen + fh / 2;
+                float textX = x - getWidth() - fontPaint.measureText(text) / 2;
+                float textY = lineLen + textHeight / 2f + 2;
                 canvas.drawText(text,
                         textX,
                         textY,
-                        paint);
+                        fontPaint);
                 canvas.restore();
             }
         }

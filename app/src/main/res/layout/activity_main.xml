@@ -79,16 +79,6 @@
                 android:insetTop="0dp"
                 android:insetBottom="0dp"/>
 
-            <Button
-                android:id="@+id/bt_compass"
-                android:layout_gravity="bottom|end"
-                android:text="@string/compass"
-                android:textSize="@dimen/_10sp"
-                android:layout_width="64dp"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="8dp"
-                android:insetTop="0dp"
-                android:insetBottom="0dp"/>
         </LinearLayout>
 
     </LinearLayout>
