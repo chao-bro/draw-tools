@@ -26,7 +26,7 @@
             android:text="0.00"
             android:gravity="center"
             android:textColor="@color/black"
-            android:background="@drawable/bg_round_rect"
+            android:background="@drawable/rulerset_bg_round_rect"
             android:textSize="14sp"
             android:layout_centerHorizontal="true"
             android:layout_alignParentBottom="true"
@@ -47,7 +47,7 @@
             android:layout_height="15dp"
             android:layout_marginStart="5dp"
             android:layout_marginTop="25dp"
-            android:background="@drawable/close_btn" />
+            android:background="@drawable/rulerset_close_btn" />
 
         <View
             android:id="@+id/rotate_view"
@@ -57,7 +57,7 @@
             android:layout_alignParentBottom="true"
             android:layout_marginStart="4dp"
             android:layout_marginBottom="4dp"
-            android:background="@drawable/rotate_btn" />
+            android:background="@drawable/rulerset_rotate_btn" />
 
     </com.example.tools.ruler.RulerViewTransformer>
 
