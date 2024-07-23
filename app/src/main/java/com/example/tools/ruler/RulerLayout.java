@@ -247,6 +247,6 @@ public class RulerLayout extends AbstractStrokeViewGroup {
         mRotateView = findViewById(R.id.rulerset_ruler_rotate_view);
         mTransformerView = findViewById(R.id.rulerset_ruler_transfer);
         resultTv = findViewById(R.id.rulerset_ruler_result);
-        mDrawAreaView = findViewById(R.id.draw_area);
+        mDrawAreaView = findViewById(R.id.rulerset_ruler_draw_area);
     }
 }
