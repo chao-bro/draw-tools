@@ -30,7 +30,7 @@ public class RulerLayout extends AbstractStrokeViewGroup {
     //布局组件
     private RulerView mCustomRulerView;
     private View mCloseView, mProlongView, mRotateView, mDrawAreaView;
-    private TransferLayout mTransformerView;
+    private RulerViewTransformer mTransformerView;
     private TextView resultTv;
 
     //移动直尺时的前一个坐标
