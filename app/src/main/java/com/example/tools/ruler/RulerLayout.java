@@ -17,7 +17,7 @@ import java.util.Locale;
 public class RulerLayout extends AbstractStrokeViewGroup {
 
     private final String TAG = "RULER_LAYOUT";
-    //直尺的宽度
+    //直尺的高度
     private final float RULER_HEIGHT_DP = 50f;
     //用于识别画线区域的高度
     private final int DRAW_AREA_WIDTH = 20;
@@ -40,10 +40,7 @@ public class RulerLayout extends AbstractStrokeViewGroup {
     float startDrawLineX, startDrawLineY;
     //结束画线的坐标
     float endDrawLineX, endDrawLineY;
-    //画线的长度
-    double drawLen = 0;
-    //填充文本字符串
-    String text = "";
+
 
     public RulerLayout(Context context) {
         super(context);
@@ -119,6 +116,8 @@ public class RulerLayout extends AbstractStrokeViewGroup {
             double k2 = -1 / k1;
             double b1 = cenY - k1 * cenX;
             double b2, xj;
+            double drawLen = 0;
+            String text;
             switch (motionEvent.getAction()) {
                 case MotionEvent.ACTION_DOWN:
                     if (Double.isInfinite(k2) || Double.isInfinite(k1)) {

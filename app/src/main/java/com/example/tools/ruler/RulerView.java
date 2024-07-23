@@ -4,16 +4,11 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.AttributeSet;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
 import com.example.tools.adapters.AbstractBasicView;
 
 public class RulerView extends AbstractBasicView {
-
-    //不透明度
-    private final int BACKGROUND_PAINT_ALPHA = 60;
     //圆角
     private final float RULER_VIEW_RADIUS = 0.5f;
     //留白宽度

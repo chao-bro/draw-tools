@@ -16,6 +16,7 @@ public abstract class AbstractBasicView extends View {
     protected final int PAINT_COLOR_WHITE = Color.WHITE;
     protected final Paint.Style PAINT_STYLE_STROKE = Paint.Style.STROKE;
     protected final Paint.Style PAINT_STYLE_FILL = Paint.Style.FILL;
+    protected final int BACKGROUND_PAINT_ALPHA = 60;//不透明度
     protected final int PAINT_STROKE_WIDTH = 3;
     protected final boolean ANTIALIAS_TRUE = true;
     protected final int FONT_PAINT_TEXT_SIZE = 20;

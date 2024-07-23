@@ -17,6 +17,9 @@ public class DrawAreaView extends View {
 
     private Paint paint, fillPaint, strokePaint;
     private Path path, fillPath, strokePath;
+    private final int BACKGROUND_COLOR = Color.BLACK;
+    private final int PAINT_COLOR = Color.RED;
+    private final int PAINT_STROKE_WIDTH = 3;
 
     public DrawAreaView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -29,26 +32,28 @@ public class DrawAreaView extends View {
     }
 
     private void init() {
-        setBackgroundColor(Color.BLACK);
+        setBackgroundColor(BACKGROUND_COLOR);
+        path = new Path();
         fillPath = new Path();
         strokePath = new Path();
+
         paint = new Paint();
-        paint.setColor(Color.RED);
         paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(3);
-        path = new Path();
+        paint.setColor(PAINT_COLOR);
+        paint.setStrokeWidth(PAINT_STROKE_WIDTH);
+
         fillPaint = new Paint();
         fillPaint.setStyle(Paint.Style.FILL);
-        fillPaint.setColor(Color.RED);
-        fillPaint.setStrokeWidth(3);
+        fillPaint.setColor(PAINT_COLOR);
+        fillPaint.setStrokeWidth(PAINT_STROKE_WIDTH);
+
         strokePaint = new Paint();
         strokePaint.setStyle(Paint.Style.STROKE);
-        strokePaint.setColor(Color.RED);
-        strokePaint.setStrokeWidth(3);
+        strokePaint.setColor(PAINT_COLOR);
+        strokePaint.setStrokeWidth(PAINT_STROKE_WIDTH);
     }
 
     int startX, startY;
-
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent event) {

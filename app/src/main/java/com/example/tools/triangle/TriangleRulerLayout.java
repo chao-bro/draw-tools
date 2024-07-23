@@ -25,12 +25,16 @@ public class TriangleRulerLayout extends AbstractStrokeViewGroup {
     //用于识别画线区域的高度
     private final int DRAW_AREA_WIDTH = 20;
 
+    private final int MAX_SIZE = screenHeight;
+    private final int MIN_SIZE = screenHeight / 3;
+
     private View mCloseView, mRotateView, mEnlargeView, mHorDrawArea, mVerDrawArea;
     private TriangleRulerView mTriangleRulerView;
     private TriangleRulerTransformer mTransformerView;
     private TextView mResultTv;
 
-    float dsx = 0f, dsy = 0f, dex = 0f, dey = 0f,res = 0;
+    float startDrawX = 0f, startDrawY = 0f, endDrawX = 0f, endDrawY = 0f;
+    double drawLen = 0;
 
     public TriangleRulerLayout(Context context) {
         super(context);
@@ -74,7 +78,7 @@ public class TriangleRulerLayout extends AbstractStrokeViewGroup {
         //移动
         mTriangleRulerView.setOnTouchListener(new OnTouchListener() {
             float lastMoveX, lastMoveY;
-            boolean inside = true;
+            boolean isInsideTriangle = true;
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 switch (motionEvent.getActionMasked()) {
@@ -84,13 +88,13 @@ public class TriangleRulerLayout extends AbstractStrokeViewGroup {
                         //判断按下区域是否在三角尺的范围上
                         Point point = new Point((int) motionEvent.getX(), (int) motionEvent.getY());
                         if (!isPointInPath(mTriangleRulerView.outPath, point)) {
-                            inside = false;
+                            isInsideTriangle = false;
                         }
                         break;
                     case MotionEvent.ACTION_MOVE:
                         float rawX = motionEvent.getRawX();
                         float rawY = motionEvent.getRawY();
-                        if (!inside) {
+                        if (!isInsideTriangle) {
                             //画线
                             path.moveTo(lastMoveX, lastMoveY);
                             path.lineTo(rawX, rawY);
@@ -105,14 +109,14 @@ public class TriangleRulerLayout extends AbstractStrokeViewGroup {
                         lastMoveY = rawY;
                         break;
                     case MotionEvent.ACTION_UP:
-                        if (inside) {
+                        if (isInsideTriangle) {
                             Log.d(TAG, "touch triangle to move triangle , current translation is (" +
                                     mTransformerView.getTranslationX() +
                                     "," +
                                     mTransformerView.getTranslationY() +
                                     ")");
                         } else {
-                            inside = true;
+                            isInsideTriangle = true;
                         }
                         break;
                 }
@@ -124,8 +128,8 @@ public class TriangleRulerLayout extends AbstractStrokeViewGroup {
             float offsetX = mRotateView.getLeft();
             float offsetY = mRotateView.getTop();
             motionEvent.offsetLocation(offsetX, offsetY);
-            mTransformerView.setPivotX(getLeft() + dp2px(20));
-            mTransformerView.setPivotY(getTop() + dp2px(20));
+            mTransformerView.setPivotX(getLeft() + dp2px(DRAW_AREA_WIDTH));
+            mTransformerView.setPivotY(getTop() + dp2px(DRAW_AREA_WIDTH));
             mTransformerView.rotateLayout(motionEvent);
             return true;
         });
@@ -147,13 +151,13 @@ public class TriangleRulerLayout extends AbstractStrokeViewGroup {
                         ViewGroup.LayoutParams params = mTransformerView.getLayoutParams();
                         params.height += (int) len;
                         params.width += (int) len;
-                        if(params.height <= screenHeight / 3){
-                            params.height = screenHeight / 3;
-                            params.width = screenHeight / 3;
+                        if(params.height <= MIN_SIZE){
+                            params.height = MIN_SIZE;
+                            params.width = MIN_SIZE;
                         }
-                        if (params.height >= screenHeight) {
-                            params.height = screenHeight;
-                            params.width = screenHeight;
+                        if (params.height >= MAX_SIZE) {
+                            params.height = MAX_SIZE;
+                            params.width = MAX_SIZE;
                         }
                         mTransformerView.setLayoutParams(params);
                         sx = x;
@@ -171,8 +175,8 @@ public class TriangleRulerLayout extends AbstractStrokeViewGroup {
         mHorDrawArea.setOnTouchListener((view, motionEvent) -> {
             double k1, k2, b1, b2;
             float xj, rawX, rawY, cenX, cenY;
-            cenX = mTransformerView.getTranslationX() + dp2px(20);
-            cenY = mTransformerView.getTranslationY() + dp2px(20);
+            cenX = mTransformerView.getTranslationX() + dp2px(DRAW_AREA_WIDTH);
+            cenY = mTransformerView.getTranslationY() + dp2px(DRAW_AREA_WIDTH);
             rawX = motionEvent.getRawX();
             rawY = motionEvent.getRawY();
             k1 = (float) Math.tan(Math.toRadians(mTransformerView.getRotation()));
@@ -181,51 +185,55 @@ public class TriangleRulerLayout extends AbstractStrokeViewGroup {
                 case MotionEvent.ACTION_DOWN:
                     if (Double.isInfinite(k1)) {
                         //垂直
-                        dsx = cenX;
-                        dsy = rawY;
+                        startDrawX = cenX;
+                        startDrawY = rawY;
                         break;
                     } else if (Double.isInfinite(k2)) {
                         //水平
-                        dsx = rawX;
-                        dsy = cenY;
+                        startDrawX = rawX;
+                        startDrawY = cenY;
                         break;
                     }
                     b1 = cenY - k1 * cenX;
                     b2 = rawY - k2 * rawX;
                     xj = (float) ((b2 - b1) / (k1 - k2));
-                    dsx = xj;
-                    dsy = (float) (xj * k1 + b1);
+                    startDrawX = xj;
+                    startDrawY = (float) (xj * k1 + b1);
                     break;
                 case MotionEvent.ACTION_MOVE:
                     path.reset();
-                    path.moveTo(dsx, dsy);
+                    path.moveTo(startDrawX, startDrawY);
                     if (Double.isInfinite(k1) || Double.isInfinite(k2)) {
                         if (Double.isInfinite(k1)) {
                             //垂直
                             path.lineTo(cenX, rawY);
-                            res = (rawY - dsy) / interval / 10;
+                            drawLen = (rawY - startDrawY) / interval / 10;
                         } else if (Double.isInfinite(k2)) {
                             //水平
                             path.lineTo(rawX, cenY);
-                            res = (rawX - dsx) / interval / 10;
+                            drawLen = (rawX - startDrawX) / interval / 10;
                         }
                     } else {
                         b1 = cenY - k1 * cenX;
                         b2 = rawY - k2 * rawX;
                         xj = (float) ((b2 - b1) / (k1 - k2));
-                        dex = xj;
-                        dey = (float) (k1 * xj + b1);
-                        path.lineTo(dex, dey);
-                        res = (float)
-                                Math.sqrt(Math.pow(dex - dsx, 2) + Math.pow(dey - dsy, 2)) / interval / 10;
+                        endDrawX = xj;
+                        endDrawY = (float) (k1 * xj + b1);
+                        path.lineTo(endDrawX, endDrawY);
+                        drawLen = (float) Math.sqrt(Math.pow(endDrawX - startDrawX, 2) +
+                                Math.pow(endDrawY - startDrawY, 2)) / interval / 10;
                     }
-                    String text = String.format(Locale.getDefault(), "%.2f", Math.abs(res));
+                    String text = String.format(Locale.getDefault(), "%.2f", Math.abs(drawLen));
                     mResultTv.setText(text);
                     invalidate();
                     break;
                 case MotionEvent.ACTION_UP:
                     onDeleteListener.copyPath(path);
-                    Log.d(TAG, "touch to draw from (" + dsx +","+ dsy +") to ("+ dex +","+ dey +")");
+                    Log.d(TAG, "touch to draw from (" +
+                            startDrawX +","+ startDrawY +
+                            ") to ("+
+                            endDrawX +","+ endDrawY +
+                            ")");
                     break;
             }
             return true;
@@ -244,42 +252,42 @@ public class TriangleRulerLayout extends AbstractStrokeViewGroup {
                 case MotionEvent.ACTION_DOWN:
                     if (Double.isInfinite(k1)) {
                         //水平
-                        dsx = rawX;
-                        dsy = cenY;
+                        startDrawX = rawX;
+                        startDrawY = cenY;
                         break;
                     } else if (Double.isInfinite(k2)) {
                         //垂直
-                        dsx = cenX;
-                        dsy = rawY;
+                        startDrawX = cenX;
+                        startDrawY = rawY;
                         break;
                     }
                     b2 = cenY - k2 * cenX;
                     b1 = rawY - k1 * rawX;
                     xj = (float) ((b2 - b1) / (k1 - k2));
-                    dsx = xj;
-                    dsy = (float) (xj * k1 + b1);
+                    startDrawX = xj;
+                    startDrawY = (float) (xj * k1 + b1);
                     break;
                 case MotionEvent.ACTION_MOVE:
                     path.reset();
-                    path.moveTo(dsx, dsy);
+                    path.moveTo(startDrawX, startDrawY);
                     if (Double.isInfinite(k1) || Double.isInfinite(k2)) {
                         if (Double.isInfinite(k1)) {
                             //纵向画线区域水平
                             path.lineTo(rawX, cenY);
-                            res = (rawX - dsx) / interval / 10;
+                            res = (rawX - startDrawX) / interval / 10;
                         } else if (Double.isInfinite(k2)) {
                             //纵向画线区域垂直
                             path.lineTo(cenX, rawY);
-                            res = (rawY - dsy) / interval / 10;
+                            res = (rawY - startDrawY) / interval / 10;
                         }
                     } else {
                         b2 = cenY - k2 * cenX;
                         b1 = rawY - k1 * rawX;
                         xj = (float) ((b2 - b1) / (k1 - k2));
-                        dex = xj;
-                        dey = (float) (k1 * xj + b1);
-                        path.lineTo(dex, dey);
-                        res = (float) Math.sqrt(Math.pow(dex - dsx, 2) + Math.pow(dey - dsy, 2)) / interval / 10;
+                        endDrawX = xj;
+                        endDrawY = (float) (k1 * xj + b1);
+                        path.lineTo(endDrawX, endDrawY);
+                        res = (float) Math.sqrt(Math.pow(endDrawX - startDrawX, 2) + Math.pow(endDrawY - startDrawY, 2)) / interval / 10;
                     }
                     String text = String.format(Locale.getDefault(), "%.2f", Math.abs(res));
                     mResultTv.setText(text);
@@ -287,7 +295,7 @@ public class TriangleRulerLayout extends AbstractStrokeViewGroup {
                     break;
                 case MotionEvent.ACTION_UP:
                     onDeleteListener.copyPath(path);
-                    Log.d(TAG, "touch to draw from (" + dsx +","+ dsy +") to ("+ dex +","+ dey +")");
+                    Log.d(TAG, "touch to draw from (" + startDrawX +","+ startDrawY +") to ("+ endDrawX +","+ endDrawY +")");
                     break;
             }
             return true;

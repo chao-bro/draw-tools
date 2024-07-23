@@ -3,19 +3,12 @@ package com.example.tools.triangle;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.View;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
 import com.example.tools.adapters.AbstractBasicView;
-import com.example.tools.application.MyApplication;
 
 /**
  * 三角尺的样式绘制
@@ -28,16 +21,17 @@ public class TriangleRulerView extends AbstractBasicView {
 
     protected Path outPath, inPath;
     protected Paint bgPaint;
+    private final int SPACING = 8;
 
     @Override
     protected void init() {
         outPath = new Path();
         inPath = new Path();
         bgPaint = new Paint();
-        bgPaint.setColor(Color.WHITE);
-        bgPaint.setStyle(Paint.Style.FILL);
-        bgPaint.setAlpha(60);
-        bgPaint.setAntiAlias(true);
+        bgPaint.setColor(PAINT_COLOR_WHITE);
+        bgPaint.setStyle(PAINT_STYLE_FILL);
+        bgPaint.setAlpha(BACKGROUND_PAINT_ALPHA);
+        bgPaint.setAntiAlias(ANTIALIAS_TRUE);
     }
 
     @SuppressLint("DrawAllocation")
@@ -65,11 +59,11 @@ public class TriangleRulerView extends AbstractBasicView {
         canvas.drawPath(inPath, paint);
         //绘制刻度线 两条
         float minLen = inSideLen / 10;//取边宽的 1 / 10 为最短线的长度
-        int num = getWidth() / interval - 16;//左右留白各半个单位长度
-        num = num - num % 10 + 1;
-        float lineLen = 0f;
-        for (int i = 0; i < num; i++) {
-            int x = (8 + i) * interval;
+        int numOfIntervals = getWidth() / interval - SPACING * 2;//左右留白各半个单位长度
+        numOfIntervals = numOfIntervals - numOfIntervals % 10 + 1;
+        float lineLen;
+        for (int i = 0; i < numOfIntervals; i++) {
+            int x = (SPACING + i) * interval;
             String text = i / 10 + "";
             boolean needDrawText = false;
             if (i % 5 == 0) {
