@@ -239,14 +239,14 @@ public class RulerLayout extends AbstractStrokeViewGroup {
     }
 
     private void inflateAndFindViews() {
-        LayoutInflater.from(context).inflate(R.layout.ruler_view, this);
+        LayoutInflater.from(context).inflate(R.layout.rulerset_ruler_view, this);
         Log.d(TAG, "add ruler as draw tool");
-        mCustomRulerView = findViewById(R.id.ruler_view);
-        mProlongView = findViewById(R.id.add_length);
-        mCloseView = findViewById(R.id.close_view);
-        mRotateView = findViewById(R.id.rotate_view);
-        mTransformerView = findViewById(R.id.transfer);
-        resultTv = findViewById(R.id.result);
+        mCustomRulerView = findViewById(R.id.rulerset_ruler_view);
+        mProlongView = findViewById(R.id.rulerset_ruler_add_length);
+        mCloseView = findViewById(R.id.rulerset_ruler_close_view);
+        mRotateView = findViewById(R.id.rulerset_ruler_rotate_view);
+        mTransformerView = findViewById(R.id.rulerset_ruler_transfer);
+        resultTv = findViewById(R.id.rulerset_ruler_result);
         mDrawAreaView = findViewById(R.id.draw_area);
     }
 }

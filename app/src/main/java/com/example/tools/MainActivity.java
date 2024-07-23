@@ -89,15 +89,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initViews() {
-        btAdd = findViewById(R.id.add_tools);
-        tools = findViewById(R.id.tool_list);
+        btAdd = findViewById(R.id.rulerset_add_tools);
+        tools = findViewById(R.id.rulerset_tool_list);
         tools.setVisibility(View.GONE);
-        option = findViewById(R.id.option);
+        option = findViewById(R.id.rulerset_option);
         drawAreaView = findViewById(R.id.draw_area);
         main = findViewById(R.id.main);
-        btRuler = findViewById(R.id.bt_ruler);
-        btTriangle = findViewById(R.id.bt_triangle);
-        btProtractor = findViewById(R.id.bt_protractor);
+        btRuler = findViewById(R.id.rulerset_bt_ruler);
+        btTriangle = findViewById(R.id.rulerset_bt_triangle);
+        btProtractor = findViewById(R.id.rulerset_bt_protractor);
     }
 
     @Override

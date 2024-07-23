@@ -6,19 +6,15 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.Point;
 import android.graphics.RectF;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -381,23 +377,23 @@ public class ProtractorLayout extends AbstractStrokeViewGroup {
     private LinearLayout options;
 
     private void inflateAndInitViews() {
-        LayoutInflater.from(context).inflate(R.layout.protractor_view, this);
+        LayoutInflater.from(context).inflate(R.layout.rulerset_protractor_view, this);
         setBackgroundColor(Color.TRANSPARENT);
-        tvAngle = findViewById(R.id.degree);
-        tvLen1 = findViewById(R.id.len1);
-        tvLen2 = findViewById(R.id.len2);
-        vClose = findViewById(R.id.close);
-        transformer = findViewById(R.id.transformer);
-        protractor = findViewById(R.id.protractor);
-        vCircle1 = findViewById(R.id.circle1);
-        vCircle2 = findViewById(R.id.circle2);
-        vRotate = findViewById(R.id.v_rotate);
-        options = findViewById(R.id.ll_options);
-        ivDegree = findViewById(R.id.iv_degree);
-        ivRadians = findViewById(R.id.iv_radians);
-        ivTriangle = findViewById(R.id.iv_triangle);
-        ivSector = findViewById(R.id.iv_sector);
-        ivCircle = findViewById(R.id.iv_circle);
-        ivCircleFilled = findViewById(R.id.iv_circle_filled);
+        tvAngle = findViewById(R.id.rulerset_protractor_degree);
+        tvLen1 = findViewById(R.id.rulerset_protractor_len1);
+        tvLen2 = findViewById(R.id.rulerset_protractor_len2);
+        vClose = findViewById(R.id.rulerset_protractor_close);
+        transformer = findViewById(R.id.rulerset_protractor_transformer);
+        protractor = findViewById(R.id.rulerset_protractor);
+        vCircle1 = findViewById(R.id.rulerset_protractor_circle1);
+        vCircle2 = findViewById(R.id.rulerset_protractor_circle2);
+        vRotate = findViewById(R.id.rulerset_protractor_v_rotate);
+        options = findViewById(R.id.rulerset_protractor_ll_options);
+        ivDegree = findViewById(R.id.rulerset_protractor_iv_degree);
+        ivRadians = findViewById(R.id.rulerset_protractor_iv_radians);
+        ivTriangle = findViewById(R.id.rulerset_protractor_iv_triangle);
+        ivSector = findViewById(R.id.rulerset_protractor_iv_sector);
+        ivCircle = findViewById(R.id.rulerset_protractor_iv_circle);
+        ivCircleFilled = findViewById(R.id.rulerset_protractor_iv_circle_filled);
     }
 }

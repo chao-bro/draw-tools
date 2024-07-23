@@ -307,15 +307,15 @@ public class TriangleRulerLayout extends AbstractStrokeViewGroup {
     private TextView tvResult;
 
     private void inflateAndFindViews() {
-        LayoutInflater.from(context).inflate(R.layout.triangle_ruler_view, this);
+        LayoutInflater.from(context).inflate(R.layout.rulerset_triangle_ruler_view, this);
         Log.d(TAG, "add triangle as draw tool");
-        close = findViewById(R.id.close);
-        rotate = findViewById(R.id.rotate);
-        enlarge = findViewById(R.id.enlarge);
-        drawHor = findViewById(R.id.draw_area_h);
-        drawVer = findViewById(R.id.draw_area_v);
-        transformer = findViewById(R.id.transformer);
-        triangle = findViewById(R.id.triangle_ruler);
-        tvResult = findViewById(R.id.tv_result);
+        close = findViewById(R.id.rulerset_triangle_close);
+        rotate = findViewById(R.id.rulerset_triangle_rotate);
+        enlarge = findViewById(R.id.rulerset_triangle_enlarge);
+        drawHor = findViewById(R.id.rulerset_triangle_draw_area_h);
+        drawVer = findViewById(R.id.rulerset_triangle_draw_area_v);
+        transformer = findViewById(R.id.rulerset_triangle_transformer);
+        triangle = findViewById(R.id.rulerset_triangle_ruler);
+        tvResult = findViewById(R.id.rulerset_triangle_tv_result);
     }
 }
