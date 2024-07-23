@@ -2,6 +2,7 @@ package com.example.tools.ruler;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Color;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,7 +18,7 @@ import java.util.Locale;
 public class RulerLayout extends AbstractStrokeViewGroup {
 
     private final String TAG = "RULER_LAYOUT";
-    //直尺的高度
+    //直尺的宽度
     private final float RULER_HEIGHT_DP = 50f;
     //用于识别画线区域的高度
     private final int DRAW_AREA_WIDTH = 20;
@@ -30,17 +31,20 @@ public class RulerLayout extends AbstractStrokeViewGroup {
     private RulerView mCustomRulerView;
     private View mCloseView, mProlongView, mRotateView, mDrawAreaView;
     private RulerViewTransformer mTransformerView;
-    private TextView mResultTextView;
+    private TextView resultTv;
 
     //移动直尺时的前一个坐标
     private int lastMoveX = 0, lastMoveY = 0;
     //拉长直尺时的前一个坐标
     private int lastProlongX, lastProlongY;
     //开始画线的坐标
-    float startDrawLineX, startDrawLineY;
+    float sx, sy;
     //结束画线的坐标
-    float endDrawLineX, endDrawLineY;
-
+    float ex, ey;
+    //画线的长度
+    double drawLen = 0;
+    //填充文本字符串
+    String text = "";
 
     public RulerLayout(Context context) {
         super(context);
@@ -51,6 +55,8 @@ public class RulerLayout extends AbstractStrokeViewGroup {
     }
 
     protected void init() {
+        //设置背景色，防止上边距被裁掉
+        setBackgroundColor(Color.TRANSPARENT);
         inflateAndFindViews();
         LayoutParams layoutParams = (LayoutParams) mTransformerView.getLayoutParams();
         layoutParams.width = screenWidth / 3;
@@ -64,19 +70,19 @@ public class RulerLayout extends AbstractStrokeViewGroup {
 
     private void setViewTouchListeners() {
         //直尺移动
-        setRulerViewTouchListener();
+        moveRulerTouchListener();
         //直尺顶部画线
-        setDrawAreaViewTouchListener();
+        drawAboveRulerTouchListener();
         //删除
-        setCloseViewTouchListener();
+        deleteRulerTouchListener();
         //旋转
-        setRotateViewTouchListener();
+        rotateRulerTouchListener();
         //拖动拉长直尺
-        setProlongViewTouchListener();
+        addRulerLenTouchListener();
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private void setRulerViewTouchListener() {
+    private void moveRulerTouchListener() {
         mCustomRulerView.setOnTouchListener((view, event) -> {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
@@ -106,7 +112,7 @@ public class RulerLayout extends AbstractStrokeViewGroup {
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private void setDrawAreaViewTouchListener() {
+    private void drawAboveRulerTouchListener() {
         mDrawAreaView.setOnTouchListener((view, motionEvent) -> {
             float cenX = mTransformerView.getTranslationX();
             float cenY = mTransformerView.getTranslationY() + dp2px(DRAW_AREA_WIDTH);
@@ -116,43 +122,41 @@ public class RulerLayout extends AbstractStrokeViewGroup {
             double k2 = -1 / k1;
             double b1 = cenY - k1 * cenX;
             double b2, xj;
-            double drawLen = 0;
-            String text;
             switch (motionEvent.getAction()) {
                 case MotionEvent.ACTION_DOWN:
                     if (Double.isInfinite(k2) || Double.isInfinite(k1)) {
                         if (Double.isInfinite(k1)) {
                             //直尺垂直
-                            startDrawLineX = cenX;
-                            startDrawLineY = motionEvent.getRawY();
+                            sx = cenX;
+                            sy = motionEvent.getRawY();
                         } else if (Double.isInfinite(k2)) {
-                            startDrawLineX = motionEvent.getRawX();
-                            startDrawLineY = cenY;
+                            sx = motionEvent.getRawX();
+                            sy = cenY;
                         }
-                        path.moveTo(startDrawLineX, startDrawLineY);
+                        path.moveTo(sx, sy);
                         break;
                     }
                     //计算按下点所在的垂线的偏移 b
                     b2 = -k2 * x + y;
                     //计算垂线与直尺的焦点的 x 坐标，即垂直映射点的 x 值
                     xj = (b1 - b2) / (k2 - k1);
-                    startDrawLineX = (float) xj;
-                    startDrawLineY = (float) (k1 * xj + b1);
-                    path.moveTo(startDrawLineX, startDrawLineY);
+                    sx = (float) xj;
+                    sy = (float) (k1 * xj + b1);
+                    path.moveTo(sx, sy);
                     break;
                 case MotionEvent.ACTION_MOVE:
                     path.reset();
-                    path.moveTo(startDrawLineX, startDrawLineY);
+                    path.moveTo(sx, sy);
                     if (Double.isInfinite(k1) || Double.isInfinite(k2)) {
                         if (Double.isInfinite(k1)) {
                             path.lineTo(cenX, motionEvent.getRawY());
-                            drawLen = (motionEvent.getRawY() - startDrawLineY) / interval / 10;
+                            drawLen = (motionEvent.getRawY() - sy) / interval / 10;
                         } else if (Double.isInfinite(k2)) {
                             path.lineTo(motionEvent.getRawX(), cenY);
-                            drawLen = (motionEvent.getRawX() - startDrawLineX) / interval / 10;
+                            drawLen = (motionEvent.getRawX() - sx) / interval / 10;
                         }
                         text = String.format(Locale.getDefault(), "%.2f", Math.abs(drawLen));
-                        mResultTextView.setText(text);
+                        resultTv.setText(text);
                         break;
                     }
                     x = motionEvent.getRawX();
@@ -160,16 +164,16 @@ public class RulerLayout extends AbstractStrokeViewGroup {
                     b2 = -k2 * x + y;
                     //计算交点的x值
                     xj = (b1 - b2) / (k2 - k1);
-                    endDrawLineX = (float) xj;
-                    endDrawLineY = (float) (k1 * xj + b1);
-                    path.lineTo(endDrawLineX, endDrawLineY);
+                    ex = (float) xj;
+                    ey = (float) (k1 * xj + b1);
+                    path.lineTo(ex, ey);
                     invalidate();
-                    drawLen = (Math.sqrt(Math.pow(endDrawLineX - startDrawLineX, 2) + Math.pow(endDrawLineY - startDrawLineY, 2))) / interval / 10;
+                    drawLen = (Math.sqrt(Math.pow(ex - sx, 2) + Math.pow(ey - sy, 2))) / interval / 10;
                     text = String.format(Locale.getDefault(), "%.2f", Math.abs(drawLen));
-                    mResultTextView.setText(text);
+                    resultTv.setText(text);
                     break;
                 case MotionEvent.ACTION_UP:
-                    Log.d(TAG, "touch to draw from (" + startDrawLineX + "," + startDrawLineY + ") to (" + endDrawLineX + "," + endDrawLineY + ")");
+                    Log.d(TAG, "touch to draw from (" + sx + "," + sy + ") to (" + ex + "," + ey + ")");
                     onDeleteListener.copyPath(path);
                     path.reset();
                     break;
@@ -178,7 +182,7 @@ public class RulerLayout extends AbstractStrokeViewGroup {
         });
     }
 
-    private void setCloseViewTouchListener() {
+    private void deleteRulerTouchListener() {
         mCloseView.setOnClickListener(view -> {
             onDeleteListener.copyPath(path);
             ((FrameLayout) RulerLayout.this.getParent()).removeView(RulerLayout.this);
@@ -187,7 +191,7 @@ public class RulerLayout extends AbstractStrokeViewGroup {
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private void setRotateViewTouchListener() {
+    private void rotateRulerTouchListener() {
         mRotateView.setOnTouchListener((view, motionEvent) -> {
             float offsetX = mRotateView.getLeft();
             float offsetY = mRotateView.getTop();
@@ -200,7 +204,7 @@ public class RulerLayout extends AbstractStrokeViewGroup {
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private void setProlongViewTouchListener() {
+    private void addRulerLenTouchListener() {
         mProlongView.setOnTouchListener((view, motionEvent) -> {
             switch (motionEvent.getAction()) {
                 case MotionEvent.ACTION_DOWN:
@@ -242,7 +246,7 @@ public class RulerLayout extends AbstractStrokeViewGroup {
         mCloseView = findViewById(R.id.rulerset_ruler_close_view);
         mRotateView = findViewById(R.id.rulerset_ruler_rotate_view);
         mTransformerView = findViewById(R.id.rulerset_ruler_transfer);
-        mResultTextView = findViewById(R.id.rulerset_ruler_result);
+        resultTv = findViewById(R.id.rulerset_ruler_result);
         mDrawAreaView = findViewById(R.id.rulerset_ruler_draw_area);
     }
 }
