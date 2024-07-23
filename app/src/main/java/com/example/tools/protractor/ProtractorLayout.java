@@ -98,7 +98,7 @@ public class ProtractorLayout extends AbstractStrokeViewGroup {
 
         //角度文本
         LayoutParams paramTvAngle = (LayoutParams) tvAngle.getLayoutParams();
-        paramTvAngle.height = height / 10;
+        paramTvAngle.height = height / 8;
         paramTvAngle.width = height / 5;
         paramTvAngle.setMargins(width / 2 - height / 10, height / 3, 0, 0);
         tvAngle.setLayoutParams(paramTvAngle);

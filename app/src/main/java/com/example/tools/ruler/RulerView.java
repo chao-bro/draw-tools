@@ -29,8 +29,8 @@ public class RulerView extends AbstractBasicView {
         bgPaint = new Paint();
         bgPaint.setColor(Color.WHITE);
         bgPaint.setStyle(Paint.Style.FILL);
-        bgPaint.setAntiAlias(true);
         bgPaint.setAlpha(60);
+        bgPaint.setAntiAlias(true);
     }
 
     @Override
@@ -38,7 +38,6 @@ public class RulerView extends AbstractBasicView {
         super.onDraw(canvas);
         //画直尺
         canvas.drawRoundRect(0f, 0f, getWidth(), getHeight(), 0.5f, 0.5f, bgPaint);
-        canvas.drawRoundRect(0f, 0f, getWidth(), getHeight(), 0.5f, 0.5f, paint);
         int numKD = getWidth() / interval - 10;
         numKD = numKD - numKD %10 + 1;
         float minLength = getHeight() / 8f;

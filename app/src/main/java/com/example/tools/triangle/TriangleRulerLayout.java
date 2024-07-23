@@ -79,9 +79,10 @@ public class TriangleRulerLayout extends AbstractStrokeViewGroup {
                         Point point = new Point((int) motionEvent.getX(), (int) motionEvent.getY());
                         if (!isPointInPath(triangle.outPath, point)) {
                             inside = false;
-                        } else if (isPointInPath(triangle.outPath, point) && isPointInPath(triangle.inPath, point)) {
-                            inside = false;
                         }
+//                        else if (isPointInPath(triangle.outPath, point) && isPointInPath(triangle.inPath, point)) {
+//                            inside = false;
+//                        }
                         break;
                     case MotionEvent.ACTION_MOVE:
                         float rawX = motionEvent.getRawX();

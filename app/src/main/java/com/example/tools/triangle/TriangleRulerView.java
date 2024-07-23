@@ -27,11 +27,17 @@ public class TriangleRulerView extends AbstractBasicView {
     }
 
     protected Path outPath, inPath;
+    protected Paint bgPaint;
 
     @Override
     protected void init() {
         outPath = new Path();
         inPath = new Path();
+        bgPaint = new Paint();
+        bgPaint.setColor(Color.WHITE);
+        bgPaint.setStyle(Paint.Style.FILL);
+        bgPaint.setAlpha(60);
+        bgPaint.setAntiAlias(true);
     }
 
     @SuppressLint("DrawAllocation")
@@ -46,7 +52,8 @@ public class TriangleRulerView extends AbstractBasicView {
         outPath.lineTo(sideLen, 0f);
         outPath.lineTo(0f, sideLen);
         outPath.close();
-        canvas.drawPath(outPath, paint);
+        canvas.drawPath(outPath, bgPaint);
+
         //减去内三角
         float padding = sideLen / 3f;
         float inSideLen = (float) ((sideLen - padding) / (2 + Math.sqrt(2)));

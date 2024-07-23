@@ -202,19 +202,20 @@ public class RulerLayout extends AbstractStrokeViewGroup {
         });
     }
 
+    private int lastAddX,lastAddY;
     @SuppressLint("ClickableViewAccessibility")
     private void addRulerLenTouchListener() {
         addLenV.setOnTouchListener((view, motionEvent) -> {
             switch (motionEvent.getAction()) {
                 case MotionEvent.ACTION_DOWN:
-                    lastX = (int) motionEvent.getRawX();
-                    lastY = (int) motionEvent.getRawY();
+                    lastAddX = (int) motionEvent.getRawX();
+                    lastAddY = (int) motionEvent.getRawY();
                     break;
                 case MotionEvent.ACTION_MOVE:
                     int rawX = (int) motionEvent.getRawX();
                     int rawY = (int) motionEvent.getRawY();
-                    int dx = rawX - lastX;
-                    int dy = rawY - lastY;
+                    int dx = rawX - lastAddX;
+                    int dy = rawY - lastAddY;
                     double radians = Math.toRadians(transfer.getRotation());
                     int wid = (int) (dx * Math.cos(radians) + dy * Math.sin(radians));
                     //直接修改直尺容器的宽度
@@ -227,8 +228,8 @@ public class RulerLayout extends AbstractStrokeViewGroup {
                     }
                     transfer.setLayoutParams(layoutParams);
                     //每次触发都更新至上一次触发点
-                    lastX = rawX;
-                    lastY = rawY;
+                    lastAddX = rawX;
+                    lastAddY = rawY;
                 case MotionEvent.ACTION_UP:
                     Log.d(TAG, "touch to enlarge ruler, current length is "+ transfer.getWidth());
                     break;
