@@ -31,7 +31,7 @@
             android:id="@+id/tv_result"
             android:text="0.00"
             android:textColor="@color/black"
-            android:background="@drawable/bg_round_rect"
+            android:background="@drawable/rulerset_bg_round_rect"
             android:textSize="14sp"
             android:gravity="center"
             android:layout_width="wrap_content"
@@ -42,7 +42,7 @@
             android:layout_centerInParent="true"
             android:layout_width="25dp"
             android:layout_height="25dp"
-            android:background="@drawable/ic_enlarge"/>
+            android:background="@drawable/rulerset_triangle_enlarge"/>
 
         <View
             android:id="@+id/close"
@@ -50,7 +50,7 @@
             android:layout_height="15dp"
             android:layout_marginTop="22dp"
             android:layout_marginStart="22dp"
-            android:background="@drawable/close_btn" />
+            android:background="@drawable/rulerset_close_btn" />
 
         <View
             android:id="@+id/rotate"
@@ -59,7 +59,7 @@
             android:layout_alignParentEnd="true"
             android:layout_marginTop="20dp"
             android:layout_marginEnd="10dp"
-            android:background="@drawable/rotate_btn" />
+            android:background="@drawable/rulerset_rotate_btn" />
 
     </com.example.tools.triangle.TransformTriangle>
 </merge>
