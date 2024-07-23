@@ -2,7 +2,6 @@ package com.example.tools.triangle;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.RectF;
@@ -15,16 +14,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-
 import androidx.annotation.Nullable;
-
 import com.example.tools.R;
 import com.example.tools.adapters.AbstractStrokeViewGroup;
-
 import java.util.Locale;
 
 public class TriangleRulerLayout extends AbstractStrokeViewGroup {
+
     private final String TAG = "TriangleRulerLayout";
+    //用于识别画线区域的高度
+    private final int DRAW_AREA_WIDTH = 20;
+
+    private View mCloseView, mRotateView, mEnlargeView, mHorDrawArea, mVerDrawArea;
+    private TriangleRulerView mTriangleRulerView;
+    private TriangleRulerTransformer mTransformerView;
+    private TextView mResultTv;
+
+    float dsx = 0f, dsy = 0f, dex = 0f, dey = 0f,res = 0;
 
     public TriangleRulerLayout(Context context) {
         super(context);
@@ -37,78 +43,73 @@ public class TriangleRulerLayout extends AbstractStrokeViewGroup {
     @Override
     protected void init() {
         inflateAndFindViews();
-        setBackgroundColor(Color.TRANSPARENT);
-        int min = Math.min(screenWidth, screenHeight) / 2;
-        LayoutParams layoutParams = (LayoutParams) transformer.getLayoutParams();
-        layoutParams.width = min;
-        layoutParams.height = min;
-        transformer.setLayoutParams(layoutParams);
-        LayoutParams paramsTv = (LayoutParams) tvResult.getLayoutParams();
-        paramsTv.setMargins(min / 5,
-                min / 5,
-                0,0);
-        tvResult.setLayoutParams(paramsTv);
-        float transX = (screenWidth - min) / 2f;
-        float transY = (screenHeight - min) / 2f;
-        transformer.setTranslationX(transX);
-        transformer.setTranslationY(transY);
-        setTouchEvents();
+        setDefaultViewSizeAndLocation();
+        setViewTouchEvents();
     }
 
-    float dsx = 0f, dsy = 0f, dex = 0f, dey = 0f,res = 0;
+    private void setDefaultViewSizeAndLocation() {
+        int min = Math.min(screenWidth, screenHeight) / 2;
+        LayoutParams layoutParams = (LayoutParams) mTransformerView.getLayoutParams();
+        layoutParams.width = min;
+        layoutParams.height = min;
+        mTransformerView.setLayoutParams(layoutParams);
+        LayoutParams paramsTv = (LayoutParams) mResultTv.getLayoutParams();
+        paramsTv.setMargins(min / 5, min / 5, 0,0);
+        mResultTv.setLayoutParams(paramsTv);
+        float transX = (screenWidth - min) / 2f;
+        float transY = (screenHeight - min) / 2f;
+        mTransformerView.setTranslationX(transX);
+        mTransformerView.setTranslationY(transY);
+    }
+
     @SuppressLint("ClickableViewAccessibility")
-    private void setTouchEvents() {
+    private void setViewTouchEvents() {
         //关闭
-        close.setOnClickListener(view -> {
-            ((FrameLayout) TriangleRulerLayout.this.getParent()).removeView(TriangleRulerLayout.this);
+        mCloseView.setOnClickListener(view -> {
+            ((FrameLayout) TriangleRulerLayout.this.getParent()).
+                    removeView(TriangleRulerLayout.this);
             onDeleteListener.copyPath(path);
             Log.d(TAG, "click to close triangle");
         });
         //移动
-        triangle.setOnTouchListener(new OnTouchListener() {
-            float sx, sy;
+        mTriangleRulerView.setOnTouchListener(new OnTouchListener() {
+            float lastMoveX, lastMoveY;
             boolean inside = true;
-
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 switch (motionEvent.getActionMasked()) {
                     case MotionEvent.ACTION_DOWN:
-                        sx = motionEvent.getRawX();
-                        sy = motionEvent.getRawY();
+                        lastMoveX = motionEvent.getRawX();
+                        lastMoveY = motionEvent.getRawY();
                         //判断按下区域是否在三角尺的范围上
                         Point point = new Point((int) motionEvent.getX(), (int) motionEvent.getY());
-                        if (!isPointInPath(triangle.outPath, point)) {
+                        if (!isPointInPath(mTriangleRulerView.outPath, point)) {
                             inside = false;
                         }
-//                        else if (isPointInPath(triangle.outPath, point) && isPointInPath(triangle.inPath, point)) {
-//                            inside = false;
-//                        }
                         break;
                     case MotionEvent.ACTION_MOVE:
                         float rawX = motionEvent.getRawX();
                         float rawY = motionEvent.getRawY();
                         if (!inside) {
                             //画线
-                            path.moveTo(sx, sy);
+                            path.moveTo(lastMoveX, lastMoveY);
                             path.lineTo(rawX, rawY);
                             invalidate();
                         } else {
-                            float offsetX = transformer.getTranslationX();
-                            float offsetY = transformer.getTranslationY();
-                            float dx = rawX - sx;
-                            float dy = rawY - sy;
-                            transformer.setTranslationX(offsetX + dx);
-                            transformer.setTranslationY(offsetY + dy);
+                            float dx = rawX - lastMoveX;
+                            float dy = rawY - lastMoveY;
+                            mTransformerView.setTranslationX(mTransformerView.getTranslationX() + dx);
+                            mTransformerView.setTranslationY(mTransformerView.getTranslationY() + dy);
                         }
-                        sx = rawX;
-                        sy = rawY;
+                        lastMoveX = rawX;
+                        lastMoveY = rawY;
                         break;
                     case MotionEvent.ACTION_UP:
                         if (inside) {
                             Log.d(TAG, "touch triangle to move triangle , current translation is (" +
-                                    transformer.getTranslationX() +
+                                    mTransformerView.getTranslationX() +
                                     "," +
-                                    transformer.getTranslationY() +
+                                    mTransformerView.getTranslationY() +
                                     ")");
                         } else {
                             inside = true;
@@ -119,17 +120,17 @@ public class TriangleRulerLayout extends AbstractStrokeViewGroup {
             }
         });
         //旋转
-        rotate.setOnTouchListener((view, motionEvent) -> {
-            float offsetX = rotate.getLeft();
-            float offsetY = rotate.getTop();
+        mRotateView.setOnTouchListener((view, motionEvent) -> {
+            float offsetX = mRotateView.getLeft();
+            float offsetY = mRotateView.getTop();
             motionEvent.offsetLocation(offsetX, offsetY);
-            transformer.setPivotX(getLeft() + dp2px(20));
-            transformer.setPivotY(getTop() + dp2px(20));
-            transformer.rotateLayout(motionEvent);
+            mTransformerView.setPivotX(getLeft() + dp2px(20));
+            mTransformerView.setPivotY(getTop() + dp2px(20));
+            mTransformerView.rotateLayout(motionEvent);
             return true;
         });
         //变大
-        enlarge.setOnTouchListener(new OnTouchListener() {
+        mEnlargeView.setOnTouchListener(new OnTouchListener() {
             float sx, sy;
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -141,9 +142,9 @@ public class TriangleRulerLayout extends AbstractStrokeViewGroup {
                     case MotionEvent.ACTION_MOVE:
                         float x = motionEvent.getRawX();
                         float y = motionEvent.getRawY();
-                        double radians = Math.toRadians(transformer.getRotation());
+                        double radians = Math.toRadians(mTransformerView.getRotation());
                         double len = (x - sx) * Math.cos(radians) + (y - sy) * Math.sin(radians);
-                        ViewGroup.LayoutParams params = transformer.getLayoutParams();
+                        ViewGroup.LayoutParams params = mTransformerView.getLayoutParams();
                         params.height += (int) len;
                         params.width += (int) len;
                         if(params.height <= screenHeight / 3){
@@ -154,27 +155,27 @@ public class TriangleRulerLayout extends AbstractStrokeViewGroup {
                             params.height = screenHeight;
                             params.width = screenHeight;
                         }
-                        transformer.setLayoutParams(params);
+                        mTransformerView.setLayoutParams(params);
                         sx = x;
                         sy = y;
                         break;
                     case MotionEvent.ACTION_UP:
                         Log.d(TAG, "touch to enlarge triangle, current container width is " +
-                                transformer.getWidth());
+                                mTransformerView.getWidth());
                         break;
                 }
                 return true;
             }
         });
         //顶端画线
-        drawHor.setOnTouchListener((view, motionEvent) -> {
+        mHorDrawArea.setOnTouchListener((view, motionEvent) -> {
             double k1, k2, b1, b2;
             float xj, rawX, rawY, cenX, cenY;
-            cenX = transformer.getTranslationX() + dp2px(20);
-            cenY = transformer.getTranslationY() + dp2px(20);
+            cenX = mTransformerView.getTranslationX() + dp2px(20);
+            cenY = mTransformerView.getTranslationY() + dp2px(20);
             rawX = motionEvent.getRawX();
             rawY = motionEvent.getRawY();
-            k1 = (float) Math.tan(Math.toRadians(transformer.getRotation()));
+            k1 = (float) Math.tan(Math.toRadians(mTransformerView.getRotation()));
             k2 = -1 / k1;
             switch (motionEvent.getActionMasked()) {
                 case MotionEvent.ACTION_DOWN:
@@ -219,7 +220,7 @@ public class TriangleRulerLayout extends AbstractStrokeViewGroup {
                                 Math.sqrt(Math.pow(dex - dsx, 2) + Math.pow(dey - dsy, 2)) / interval / 10;
                     }
                     String text = String.format(Locale.getDefault(), "%.2f", Math.abs(res));
-                    tvResult.setText(text);
+                    mResultTv.setText(text);
                     invalidate();
                     break;
                 case MotionEvent.ACTION_UP:
@@ -230,14 +231,14 @@ public class TriangleRulerLayout extends AbstractStrokeViewGroup {
             return true;
         });
         //纵向画线
-        drawVer.setOnTouchListener((view, motionEvent) -> {
+        mVerDrawArea.setOnTouchListener((view, motionEvent) -> {
             double k1, k2, b1, b2;
             float xj, rawX, rawY, cenX, cenY, res = 0f;
-            cenX = transformer.getTranslationX() + dp2px(20);
-            cenY = transformer.getTranslationY() + dp2px(20);
+            cenX = mTransformerView.getTranslationX() + dp2px(DRAW_AREA_WIDTH);
+            cenY = mTransformerView.getTranslationY() + dp2px(DRAW_AREA_WIDTH);
             rawX = motionEvent.getRawX();
             rawY = motionEvent.getRawY();
-            k1 = Math.tan(Math.toRadians(transformer.getRotation()));
+            k1 = Math.tan(Math.toRadians(mTransformerView.getRotation()));
             k2 = -1 / k1;
             switch (motionEvent.getActionMasked()) {
                 case MotionEvent.ACTION_DOWN:
@@ -281,7 +282,7 @@ public class TriangleRulerLayout extends AbstractStrokeViewGroup {
                         res = (float) Math.sqrt(Math.pow(dex - dsx, 2) + Math.pow(dey - dsy, 2)) / interval / 10;
                     }
                     String text = String.format(Locale.getDefault(), "%.2f", Math.abs(res));
-                    tvResult.setText(text);
+                    mResultTv.setText(text);
                     invalidate();
                     break;
                 case MotionEvent.ACTION_UP:
@@ -301,21 +302,16 @@ public class TriangleRulerLayout extends AbstractStrokeViewGroup {
         return region.contains(point.x, point.y);
     }
 
-    private View close, rotate, enlarge, drawHor, drawVer;
-    private TriangleRulerView triangle;
-    private TransformTriangle transformer;
-    private TextView tvResult;
-
     private void inflateAndFindViews() {
         LayoutInflater.from(context).inflate(R.layout.triangle_ruler_view, this);
         Log.d(TAG, "add triangle as draw tool");
-        close = findViewById(R.id.close);
-        rotate = findViewById(R.id.rotate);
-        enlarge = findViewById(R.id.enlarge);
-        drawHor = findViewById(R.id.draw_area_h);
-        drawVer = findViewById(R.id.draw_area_v);
-        transformer = findViewById(R.id.transformer);
-        triangle = findViewById(R.id.triangle_ruler);
-        tvResult = findViewById(R.id.tv_result);
+        mCloseView = findViewById(R.id.close);
+        mRotateView = findViewById(R.id.rotate);
+        mEnlargeView = findViewById(R.id.enlarge);
+        mHorDrawArea = findViewById(R.id.draw_area_h);
+        mVerDrawArea = findViewById(R.id.draw_area_v);
+        mTransformerView = findViewById(R.id.transformer);
+        mTriangleRulerView = findViewById(R.id.triangle_ruler);
+        mResultTv = findViewById(R.id.tv_result);
     }
 }

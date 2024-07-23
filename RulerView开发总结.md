@@ -126,7 +126,7 @@
   android:layout_width="match_parent"
   android:layout_height="match_parent">
 
-  <com.example.tools.ruler.TransferLayout
+  <com.example.tools.ruler.RulerViewTransformer
     android:id="@+id/transfer"
     android:layout_width="560dp"
     android:layout_height="70dp">
@@ -177,7 +177,7 @@
       android:layout_marginBottom="4dp"
       android:background="@drawable/rotate_btn" />
 
-  </com.example.tools.ruler.TransferLayout>
+  </com.example.tools.ruler.RulerViewTransformer>
 
 </merge>
 ```

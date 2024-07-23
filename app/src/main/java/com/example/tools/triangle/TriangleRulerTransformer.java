@@ -7,15 +7,15 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.RelativeLayout;
 
-public class TransformTriangle extends RelativeLayout {
+public class TriangleRulerTransformer extends RelativeLayout {
 
-    private static final String TAG = "TransformTriangle";
+    private static final String TAG = "TriangleRulerTransformer";
 
-    public TransformTriangle(Context context) {
+    public TriangleRulerTransformer(Context context) {
         super(context);
     }
 
-    public TransformTriangle(Context context, AttributeSet attrs) {
+    public TriangleRulerTransformer(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 

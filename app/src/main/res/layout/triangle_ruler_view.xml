@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.example.tools.triangle.TransformTriangle
+    <com.example.tools.triangle.TriangleRulerTransformer
         android:id="@+id/transformer"
         android:layout_width="300dp"
         android:layout_height="300dp">
@@ -61,5 +61,5 @@
             android:layout_marginEnd="10dp"
             android:background="@drawable/rotate_btn" />
 
-    </com.example.tools.triangle.TransformTriangle>
+    </com.example.tools.triangle.TriangleRulerTransformer>
 </merge>
