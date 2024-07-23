@@ -311,15 +311,15 @@ public class TriangleRulerLayout extends AbstractStrokeViewGroup {
     }
 
     private void inflateAndFindViews() {
-        LayoutInflater.from(context).inflate(R.layout.triangle_ruler_view, this);
+        LayoutInflater.from(context).inflate(R.layout.rulerset_triangle_ruler_view, this);
         Log.d(TAG, "add triangle as draw tool");
-        mCloseView = findViewById(R.id.close);
-        mRotateView = findViewById(R.id.rotate);
-        mEnlargeView = findViewById(R.id.enlarge);
-        mHorDrawArea = findViewById(R.id.draw_area_h);
-        mVerDrawArea = findViewById(R.id.draw_area_v);
-        mTransformerView = findViewById(R.id.transformer);
-        mTriangleRulerView = findViewById(R.id.triangle_ruler);
-        mResultTv = findViewById(R.id.tv_result);
+        mCloseView = findViewById(R.id.rulerset_triangle_close);
+        mRotateView = findViewById(R.id.rulerset_triangle_rotate);
+        mEnlargeView = findViewById(R.id.rulerset_triangle_enlarge);
+        mHorDrawArea = findViewById(R.id.rulerset_triangle_draw_area_h);
+        mVerDrawArea = findViewById(R.id.rulerset_triangle_draw_area_v);
+        mTransformerView = findViewById(R.id.rulerset_triangle_transformer);
+        mTriangleRulerView = findViewById(R.id.rulerset_triangle_ruler);
+        mResultTv = findViewById(R.id.rulerset_triangle_tv_result);
     }
 }

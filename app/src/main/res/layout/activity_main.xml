@@ -13,7 +13,7 @@
         android:layout_height="match_parent" />
 
     <LinearLayout
-        android:id="@+id/option"
+        android:id="@+id/rulerset_option"
         android:orientation="horizontal"
         android:layout_gravity="bottom|end"
         android:layout_marginBottom="12dp"
@@ -21,7 +21,7 @@
         android:layout_height="wrap_content">
 
         <Button
-            android:id="@+id/add_tools"
+            android:id="@+id/rulerset_add_tools"
             android:layout_marginStart="12dp"
             android:text="@string/add_tools"
             android:textSize="28sp"
@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"/>
 
         <LinearLayout
-            android:id="@+id/tool_list"
+            android:id="@+id/rulerset_tool_list"
             android:visibility="visible"
             android:orientation="horizontal"
             android:layout_width="0dp"
@@ -40,7 +40,7 @@
             android:layout_height="match_parent">
 
             <Button
-                android:id="@+id/bt_ruler"
+                android:id="@+id/rulerset_bt_ruler"
                 android:layout_width="76dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="bottom|end"
@@ -52,7 +52,7 @@
 
 
             <Button
-                android:id="@+id/bt_triangle"
+                android:id="@+id/rulerset_bt_triangle"
                 android:layout_width="66dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="bottom|end"
@@ -63,7 +63,7 @@
                 android:textSize="10sp" />
 
             <Button
-                android:id="@+id/bt_protractor"
+                android:id="@+id/rulerset_bt_protractor"
                 android:layout_gravity="bottom|end"
                 android:text="@string/protractor"
                 android:textSize="@dimen/_10sp"

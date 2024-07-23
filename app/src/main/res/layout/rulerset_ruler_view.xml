@@ -6,23 +6,23 @@
 
 
     <com.example.tools.ruler.RulerViewTransformer
-        android:id="@+id/transfer"
+        android:id="@+id/rulerset_ruler_transfer"
         android:layout_width="560dp"
         android:layout_height="70dp">
 
         <View
-            android:id="@+id/draw_area"
+            android:id="@+id/rulerset_ruler_draw_area"
             android:layout_width="match_parent"
             android:layout_height="20dp" />
 
         <com.example.tools.ruler.RulerView
             android:layout_marginTop="20dp"
-            android:id="@+id/ruler_view"
+            android:id="@+id/rulerset_ruler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
         <TextView
-            android:id="@+id/result"
+            android:id="@+id/rulerset_ruler_result"
             android:text="0.00"
             android:gravity="center"
             android:textColor="@color/black"
@@ -34,14 +34,14 @@
             android:layout_height="wrap_content"/>
 
         <View
-            android:id="@+id/add_length"
+            android:id="@+id/rulerset_ruler_add_length"
             android:layout_marginTop="20dp"
             android:layout_width="30dp"
             android:layout_height="match_parent"
             android:layout_alignParentEnd="true" />
 
         <View
-            android:id="@+id/close_view"
+            android:id="@+id/rulerset_ruler_close_view"
             android:layout_alignParentBottom="true"
             android:layout_width="15dp"
             android:layout_height="15dp"
@@ -50,7 +50,7 @@
             android:background="@drawable/rulerset_close_btn" />
 
         <View
-            android:id="@+id/rotate_view"
+            android:id="@+id/rulerset_ruler_rotate_view"
             android:layout_width="15dp"
             android:layout_height="15dp"
             android:layout_alignParentEnd="true"

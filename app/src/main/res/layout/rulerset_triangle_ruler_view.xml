@@ -5,30 +5,30 @@
     android:layout_height="match_parent">
 
     <com.example.tools.triangle.TriangleRulerTransformer
-        android:id="@+id/transformer"
+        android:id="@+id/rulerset_triangle_transformer"
         android:layout_width="300dp"
         android:layout_height="300dp">
 
         <View
-            android:id="@+id/draw_area_h"
+            android:id="@+id/rulerset_triangle_draw_area_h"
             android:layout_marginStart="20dp"
             android:layout_width="match_parent"
             android:layout_height="20dp"/>
         <View
-            android:id="@+id/draw_area_v"
+            android:id="@+id/rulerset_triangle_draw_area_v"
             android:layout_marginTop="20dp"
             android:layout_width="20dp"
             android:layout_height="match_parent"/>
 
         <com.example.tools.triangle.TriangleRulerView
-            android:id="@+id/triangle_ruler"
+            android:id="@+id/rulerset_triangle_ruler"
             android:layout_marginTop="20dp"
             android:layout_marginLeft="20dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
         <TextView
-            android:id="@+id/tv_result"
+            android:id="@+id/rulerset_triangle_tv_result"
             android:text="0.00"
             android:textColor="@color/black"
             android:background="@drawable/rulerset_bg_round_rect"
@@ -38,14 +38,14 @@
             android:layout_height="wrap_content"/>
 
         <View
-            android:id="@+id/enlarge"
+            android:id="@+id/rulerset_triangle_enlarge"
             android:layout_centerInParent="true"
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:background="@drawable/rulerset_triangle_enlarge"/>
 
         <View
-            android:id="@+id/close"
+            android:id="@+id/rulerset_triangle_close"
             android:layout_width="15dp"
             android:layout_height="15dp"
             android:layout_marginTop="22dp"
@@ -53,7 +53,7 @@
             android:background="@drawable/rulerset_close_btn" />
 
         <View
-            android:id="@+id/rotate"
+            android:id="@+id/rulerset_triangle_rotate"
             android:layout_width="15dp"
             android:layout_height="15dp"
             android:layout_alignParentEnd="true"
