@@ -110,14 +110,12 @@ public class ProtractorLayout extends AbstractStrokeViewGroup {
 
         //长度1
         LayoutParams paramLen1 = (LayoutParams) mCircleLength1.getLayoutParams();
-        paramLen1.width = iconSize * 2;
         paramLen1.height = iconSize;
         paramLen1.setMargins(protractorHeight / 4, 0, 0, 0);
         mCircleLength1.setLayoutParams(paramLen1);
 
         //长度2
         LayoutParams paramLen2 = (LayoutParams) mCircleLength2.getLayoutParams();
-        paramLen2.width = iconSize * 2;
         paramLen2.height = iconSize;
         paramLen2.setMargins(protractorHeight * 3 / 5, 0, 0, 0);
         mCircleLength2.setLayoutParams(paramLen2);
