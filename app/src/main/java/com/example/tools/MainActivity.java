@@ -5,26 +5,22 @@ import android.graphics.Path;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.tools.adapters.AbstractStrokeViewGroup;
 import com.example.tools.listener.OnDeleteListener;
 import com.example.tools.protractor.ProtractorLayout;
 import com.example.tools.ruler.RulerLayout;
 import com.example.tools.triangle.TriangleRulerLayout;
-
 import java.util.HashSet;
 
 public class MainActivity extends AppCompatActivity {
 
-    private FrameLayout main;
-    private boolean show = false;
+    private FrameLayout mMainContainer;
+    private boolean isToolsVisible = false;
     private AbstractStrokeViewGroup toolV;
     private HashSet<AbstractStrokeViewGroup> viewSet;
     private LinearLayout tools, option;
@@ -43,12 +39,12 @@ public class MainActivity extends AppCompatActivity {
 
     private void setEvents() {
         btAdd.setOnClickListener(view -> {
-            if (!show) {
+            if (!isToolsVisible) {
                 tools.setVisibility(View.VISIBLE);
-                show = true;
+                isToolsVisible = true;
             } else {
                 tools.setVisibility(View.GONE);
-                show = false;
+                isToolsVisible = false;
             }
         });
 
@@ -76,16 +72,16 @@ public class MainActivity extends AppCompatActivity {
         for (AbstractStrokeViewGroup t : viewSet) {
             if (tool.getClass() == t.getClass()) {
                 //存在
-                main.removeView(t);
+                mMainContainer.removeView(t);
                 viewSet.remove(t);
                 break;
             }
         }
-        main.addView(toolV);
+        mMainContainer.addView(toolV);
         viewSet.add(toolV);
         tools.setVisibility(View.GONE);
-        main.bringChildToFront(option);
-        show = false;
+        mMainContainer.bringChildToFront(option);
+        isToolsVisible = false;
     }
 
     private void initViews() {
@@ -94,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
         tools.setVisibility(View.GONE);
         option = findViewById(R.id.rulerset_option);
         drawAreaView = findViewById(R.id.draw_area);
-        main = findViewById(R.id.main);
+        mMainContainer = findViewById(R.id.main);
         btRuler = findViewById(R.id.rulerset_bt_ruler);
         btTriangle = findViewById(R.id.rulerset_bt_triangle);
         btProtractor = findViewById(R.id.rulerset_bt_protractor);
@@ -107,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
                 for (AbstractStrokeViewGroup t : viewSet) {
                     if (t.dispatchTouchEvent(ev)) {
                         toolV = t;
-                        main.bringChildToFront(toolV);
+                        mMainContainer.bringChildToFront(toolV);
                         break;
                     }
                 }

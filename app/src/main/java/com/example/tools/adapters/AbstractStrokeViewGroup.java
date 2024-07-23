@@ -25,6 +25,7 @@ public abstract class AbstractStrokeViewGroup extends RelativeLayout {
     protected final int PAINT_STROKE_WIDTH = 3;
     //两个刻度之间的宽度
     protected int interval = 0;
+    protected final int BACKGROUND_COLOR = Color.TRANSPARENT;
 
     protected Context context;
     protected Paint paint;
@@ -57,6 +58,8 @@ public abstract class AbstractStrokeViewGroup extends RelativeLayout {
         screenHeight = dm.heightPixels;
         screenWidth = dm.widthPixels;
         interval = (int) (dm.density * 4 + 0.5);
+        //设置背景色，防止上边距被裁掉
+        setBackgroundColor(BACKGROUND_COLOR);
         init();
     }
 
