@@ -9,27 +9,30 @@ import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.widget.RelativeLayout;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-import com.example.tools.application.MyApplication;
 import com.example.tools.listener.OnDeleteListener;
 
 public abstract class AbstractStrokeViewGroup extends RelativeLayout {
 
+    //画笔颜色
+    protected final int PAINT_COLOR = Color.RED;
+    //画笔样式
+    protected final Paint.Style PAINT_STYLE = Paint.Style.STROKE;
+    //抗锯齿
+    protected final boolean PAINT_ANTIALIAS = true;
+    //画笔宽度
+    protected final int PAINT_STROKE_WIDTH = 3;
+    //两个刻度之间的宽度
+    protected int interval = 0;
+
     protected Context context;
     protected Paint paint;
     protected Path path;
-    protected int strokeWid = 3;
     protected OnDeleteListener onDeleteListener;
-    protected boolean isDrawing = false;
     protected int screenHeight, screenWidth;
 
     protected abstract void init();
-
-    protected float startX, startY;
-    protected int interval = 0;
 
     public AbstractStrokeViewGroup(Context context) {
         super(context);
@@ -45,10 +48,10 @@ public abstract class AbstractStrokeViewGroup extends RelativeLayout {
 
     private void unPublicInit() {
         paint = new Paint();
-        paint.setColor(Color.RED);
-        paint.setStrokeWidth(strokeWid);
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setAntiAlias(true);
+        paint.setColor(PAINT_COLOR);
+        paint.setStrokeWidth(PAINT_STROKE_WIDTH);
+        paint.setStyle(PAINT_STYLE);
+        paint.setAntiAlias(PAINT_ANTIALIAS);
         path = new Path();
         DisplayMetrics dm = context.getResources().getDisplayMetrics();
         screenHeight = dm.heightPixels;

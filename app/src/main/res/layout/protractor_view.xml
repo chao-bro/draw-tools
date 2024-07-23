@@ -119,13 +119,13 @@
     </com.example.tools.protractor.ProtractorTransformer>
     <View
         android:id="@+id/circle1"
-        android:background="@drawable/circle1"
+        android:background="@drawable/ic_protractor_circle1"
         android:layout_width="30dp"
         android:layout_height="30dp"/>
 
     <View
         android:id="@+id/circle2"
-        android:background="@drawable/circle2"
+        android:background="@drawable/ic_protractor_circle2"
         android:layout_width="30dp"
         android:layout_height="30dp"/>
 </merge>
